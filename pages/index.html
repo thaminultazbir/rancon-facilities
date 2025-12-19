@@ -4,53 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rancon Facilities Support</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        ranconBlue: '#005a8d', // Slightly darker, richer blue
-                        ranconRed: '#d32f2f',
-                        bgGray: '#F3F4F6',
-                        glass: 'rgba(255, 255, 255, 0.95)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'], // Added for premium headings
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    },
-                    boxShadow: {
-                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.15)', // Softer, deeper shadow
-                        'glow': '0 0 15px rgba(0, 90, 141, 0.3)',
-                    }
+                    colors: { ranconBlue: '#005a8d', ranconRed: '#d32f2f', bgGray: '#F3F4F6' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    animation: { 'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
+                    keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } },
+                    boxShadow: { 'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.15)', 'glow': '0 0 15px rgba(0, 90, 141, 0.3)' }
                 }
             }
         }
     </script>
-
     <style>
         body { -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Premium Select Dropdown Arrow */
-        select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.75rem center;
-            background-repeat: no-repeat;
-            background-size: 1.25em 1.25em;
-        }
+        select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.25em 1.25em; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased overflow-x-hidden selection:bg-ranconBlue selection:text-white">
@@ -58,24 +30,14 @@
     <div class="mx-auto max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
 
         <div class="relative h-[550px] w-full overflow-hidden">
-            <img id="parallax-bg" 
-                 src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
-                 alt="Background" 
-                 class="absolute inset-0 w-full h-[120%] object-cover transition-transform duration-75 will-change-transform">
-            
+            <img id="parallax-bg" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" alt="Background" class="absolute inset-0 w-full h-[120%] object-cover transition-transform duration-75 will-change-transform">
             <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
-            
             <div class="relative z-10 flex flex-col items-center pt-24 px-8 text-center text-white">
-                <p class="text-xs font-semibold tracking-[0.3em] uppercase opacity-90 mb-4 animate-[fadeInUp_1s_ease-out_forwards]">
-                    Welcome to
-                </p>
-                <h1 class="text-4xl font-serif tracking-wide leading-tight drop-shadow-lg opacity-0 animate-[fadeInUp_1s_0.2s_ease-out_forwards]">
-                    Rancon<br>Facilities
-                </h1>
+                <p class="text-xs font-semibold tracking-[0.3em] uppercase opacity-90 mb-4 animate-[fadeInUp_1s_ease-out_forwards]">Welcome to</p>
+                <h1 class="text-4xl font-serif tracking-wide leading-tight drop-shadow-lg opacity-0 animate-[fadeInUp_1s_0.2s_ease-out_forwards]">Rancon<br>Facilities</h1>
                 <div class="h-1 w-12 bg-white/50 rounded-full mt-6 mb-6 opacity-0 animate-[fadeInUp_1s_0.4s_ease-out_forwards]"></div>
-                
                 <div class="w-full max-w-[180px] opacity-0 animate-[fadeInUp_1s_0.5s_ease-out_forwards]">
-                    <img src="./img/logo.png" onerror="this.style.display='none'" alt="Rancon Logo" class="w-full object-contain drop-shadow-xl brightness-0 invert">
+                    <img src="../img/logo.png" onerror="this.style.display='none'" alt="Rancon Logo" class="w-full object-contain drop-shadow-xl brightness-0 invert">
                 </div>
             </div>
         </div>
@@ -96,20 +58,20 @@
 
                 <div class="space-y-6">
                     <div class="group relative">
-                        <input type="text" name="name" required placeholder=" " 
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all placeholder-transparent">
-                        <label class="absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Your Name</label>
+                        <input type="text" id="name" name="name" required placeholder=" " 
+                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
+                        <label for="name" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Your Name</label>
                     </div>
 
                     <div class="group relative">
-                        <input type="tel" name="contact" required placeholder=" " 
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all placeholder-transparent">
-                        <label class="absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Contact Number</label>
+                        <input type="tel" id="contact" name="contact" required placeholder=" " 
+                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
+                        <label for="contact" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Contact Number</label>
                     </div>
 
                     <div class="relative">
                         <select id="buildingType" name="buildingType" required onchange="handleTypeChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue appearance-none transition-all">
+                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all cursor-pointer">
                             <option value="" disabled selected>Building Type</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
@@ -118,18 +80,18 @@
 
                     <div class="relative">
                         <select id="buildingName" name="buildingName" required disabled onchange="handleBuildingChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 disabled:bg-gray-100">
+                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 disabled:bg-gray-100 cursor-pointer">
                             <option value="">Select Building</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <select id="floor" name="floor" required disabled onchange="handleFloorChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue appearance-none transition-all disabled:opacity-50">
+                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
                             <option value="">Floor</option>
                         </select>
                         <select id="apartment" name="apartment" required disabled
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue appearance-none transition-all disabled:opacity-50">
+                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
                             <option value="">Unit</option>
                         </select>
                     </div>
@@ -145,7 +107,7 @@
                 <div class="space-y-6">
                     <div class="relative">
                         <select name="Category" required
-                            class="w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-ranconRed/20 focus:border-ranconRed appearance-none transition-all">
+                            class="w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconRed appearance-none transition-all cursor-pointer">
                             <option value="" disabled selected>Select Category</option>
                             <option value="Structural Observation">Structural Observation</option>
                             <option value="Material Concern">Material Concern</option>
@@ -156,9 +118,9 @@
                     </div>
 
                     <div class="group relative">
-                        <textarea name="details" required rows="4" placeholder=" "
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-ranconRed/20 focus:border-ranconRed resize-none transition-all placeholder-transparent"></textarea>
-                        <label class="absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconRed">Describe the issue...</label>
+                        <textarea id="details" name="details" required rows="4" placeholder=" "
+                            class="peer w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconRed resize-none transition-all placeholder-transparent"></textarea>
+                        <label for="details" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconRed">Describe the issue...</label>
                     </div>
 
                     <div>
@@ -170,7 +132,6 @@
                                 class="w-14 h-14 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-ranconBlue hover:text-ranconBlue hover:bg-blue-50 transition-all group">
                                 <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                             </button>
-                            
                             <div class="flex-1 h-14 flex items-center overflow-x-auto no-scrollbar gap-2" id="fileListContainer">
                                 <span class="text-sm text-gray-400 italic pl-1">No photos added</span>
                             </div>
@@ -192,9 +153,6 @@
     </div>
 
     <script>
-        // ... (Keep your existing Database Fetch & Dropdown Logic exactly as it was) ...
-        // I am only including the specific update for the File Upload UI Logic below
-
         let allBuildings = [];
         let currentBuildingUnits = [];
         const typeSelect = document.getElementById('buildingType');
@@ -268,27 +226,22 @@
             aptSelect.disabled = false;
         }
 
-        // --- UPDATED FILE UPLOAD UI LOGIC ---
+        // File Upload Logic
         const fileInput = document.getElementById('fileInput');
         const fileListContainer = document.getElementById('fileListContainer');
         
         fileInput.addEventListener('change', function() {
-            fileListContainer.innerHTML = ''; // Clear previous
+            fileListContainer.innerHTML = '';
             if (this.files.length > 0) {
-                // Create a "Chip" for each file
-                Array.from(this.files).forEach((file, index) => {
+                Array.from(this.files).forEach((file) => {
                     const chip = document.createElement('div');
                     chip.className = "flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg border border-gray-200 shrink-0";
-                    chip.innerHTML = `
-                        <span class="text-xs font-medium text-gray-700 truncate max-w-[80px]">${file.name}</span>
-                    `;
+                    chip.innerHTML = `<span class="text-xs font-medium text-gray-700 truncate max-w-[80px]">${file.name}</span>`;
                     fileListContainer.appendChild(chip);
                 });
-                
-                // Add Clear Button at the end
                 const clearBtn = document.createElement('button');
                 clearBtn.className = "text-xs text-red-500 font-bold hover:underline shrink-0 px-2";
-                clearBtn.textContent = "Clear All";
+                clearBtn.textContent = "Clear";
                 clearBtn.onclick = () => {
                     fileInput.value = '';
                     fileListContainer.innerHTML = '<span class="text-sm text-gray-400 italic pl-1">No photos added</span>';
@@ -299,13 +252,11 @@
             }
         });
 
-        // Parallax
         window.addEventListener('scroll', () => {
             const scroll = window.scrollY;
             document.getElementById('parallax-bg').style.transform = `translateY(${scroll * 0.5}px)`;
         });
 
-        // Submit logic remains the same (fetching /api/submit-ticket)
         document.getElementById('ticketForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loader').style.display = 'flex';
