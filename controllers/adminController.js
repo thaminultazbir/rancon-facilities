@@ -70,8 +70,9 @@ exports.updateProfile = (req, res) => {
     const { id, name, phone, email } = req.body; // Expect ID from frontend now
     let sql, params;
     if (req.file) {
+        const cleanPath = req.file.path.replace(/^public[\\/]/, '').replace(/\\/g, '/');
         sql = "UPDATE admins SET name = ?, phone = ?, email = ?, avatar = ? WHERE id = ?";
-        params = [name, phone, email, req.file.path.replace(/\\/g, '/'), id];
+        params = [name, phone, email, cleanPath, id];
     } else {
         sql = "UPDATE admins SET name = ?, phone = ?, email = ? WHERE id = ?";
         params = [name, phone, email, id];

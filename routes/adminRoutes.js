@@ -3,15 +3,20 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const upload = require('../middleware/uploadMiddleware');
 
-// Auth & Management
-router.post('/login', adminController.login);
-router.get('/admins', adminController.getAllAdmins);
-router.post('/create', adminController.createAdmin);
+// --- AUTHENTICATION ---
+// Matches: /api/admin/login
+router.post('/admin/login', adminController.login);
 
-// Dashboard Data
-router.get('/stats', adminController.getStats);
-router.get('/profile', adminController.getProfile);
-router.post('/profile', upload.single('avatar'), adminController.updateProfile);
-router.post('/password', adminController.updatePassword);
+// --- ADMIN MANAGEMENT ---
+// Matches: /api/admin/list
+router.get('/admin/list', adminController.getAllAdmins);
+// Matches: /api/admin/create
+router.post('/admin/create', adminController.createAdmin);
+
+// --- DASHBOARD DATA ---
+router.get('/admin/stats', adminController.getStats);
+router.get('/admin/profile', adminController.getProfile);
+router.post('/admin/profile', upload.single('avatar'), adminController.updateProfile);
+router.post('/admin/password', adminController.updatePassword);
 
 module.exports = router;

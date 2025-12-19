@@ -6,34 +6,28 @@
     <title>Admin Dashboard | Rancon Support</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { ranconBlue: '#076C99', ranconRed: '#f44336', bgGray: '#F0F1F1' },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    animation: { 'zoom-in': 'zoomIn 0.3s ease-out forwards' },
-                    keyframes: { zoomIn: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } } }
-                }
-            }
+        // Tailwind Configuration
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { ranconBlue: '#076C99', ranconRed: '#f44336', bgGray: '#F0F1F1' }, 
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    animation: { 'zoom-in': 'zoomIn 0.3s ease-out forwards' }, 
+                    keyframes: { zoomIn: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } } } 
+                } 
+            } 
         }
     </script>
-    <style>
-        .active-nav { background-color: #076C99; color: white; box-shadow: 0 4px 6px -1px rgba(7, 108, 153, 0.4); }
-        .inactive-nav { color: #4B5563; background-color: transparent; }
-        .inactive-nav:hover { background-color: #F3F4F6; }
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
 
     <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-20 shadow-sm">
         <div class="h-20 flex items-center justify-center border-b border-gray-100">
-            <img src="./img/logo.png" onerror="this.src='https://via.placeholder.com/150x50?text=RANCON'" alt="Logo" class="h-8 object-contain">
+            <img src="../img/logo.png" onerror="this.src='https://via.placeholder.com/150x50?text=RANCON'" alt="Logo" class="h-8 object-contain">
         </div>
+        
         <nav class="flex-1 px-4 py-6 space-y-2">
             <button onclick="switchView('tickets')" id="nav-tickets" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all active-nav font-medium text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -52,13 +46,8 @@
                 Admins
             </button>
         </nav>
-        <div class="p-4 border-t border-gray-100">
-            <button onclick="logout()" class="w-full py-2.5 text-sm text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Logout
-            </button>
-        </div>
-    </aside>
+        
+        </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden relative">
         <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-20 shadow-sm">
@@ -73,10 +62,11 @@
                         <img id="headerAvatar" src="https://ui-avatars.com/api/?name=Admin+User&background=076C99&color=fff" class="w-full h-full rounded-full object-cover">
                     </div>
                 </button>
+                
                 <div id="profileMenu" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 transform origin-top-right transition-all z-50 animate-zoom-in">
                     <a href="#" onclick="openProfileModal()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-ranconBlue">My Profile</a>
                     <div class="border-t border-gray-100 my-1"></div>
-                    <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                    <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
                 </div>
             </div>
         </header>
@@ -96,7 +86,6 @@
                     <div><p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Resolved</p><h3 class="text-2xl font-bold text-gray-800" id="resolvedCount">0</h3></div>
                 </div>
             </div>
-
             <div class="flex-1 p-8 overflow-hidden flex flex-col">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
                     <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
@@ -123,15 +112,58 @@
             </div>
         </div>
 
-        <div id="view-staff" class="hidden flex-1 p-8 overflow-hidden flex-col"><div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden"><div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10"><h2 class="text-lg font-bold text-gray-800">Staff Members</h2><button onclick="openStaffModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium"><span>+ Add Staff</span></button></div><div class="flex-1 overflow-auto custom-scroll"><table class="w-full text-left border-collapse"><thead class="bg-gray-50 sticky top-0 z-10"><tr><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Emp ID</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Name</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Role</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Contact</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Status</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Actions</th></tr></thead><tbody id="staffTableBody" class="divide-y divide-gray-100"></tbody></table></div></div></div>
-        <div id="view-buildings" class="hidden flex-1 p-8 overflow-hidden flex-col"><div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden"><div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10"><h2 class="text-lg font-bold text-gray-800">Managed Buildings</h2><button onclick="openBuildingModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium"><span>+ Add Building</span></button></div><div class="flex-1 overflow-auto custom-scroll"><table class="w-full text-left border-collapse"><thead class="bg-gray-50 sticky top-0 z-10"><tr><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Building Name</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Type</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Floors</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Total Units</th><th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Actions</th></tr></thead><tbody id="buildingTableBody" class="divide-y divide-gray-100"></tbody></table></div></div></div>
+        <div id="view-staff" class="hidden flex-1 p-8 overflow-hidden flex-col">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
+                <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                    <h2 class="text-lg font-bold text-gray-800">Staff Members</h2>
+                    <button onclick="openStaffModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium"><span>+ Add Staff</span></button>
+                </div>
+                <div class="flex-1 overflow-auto custom-scroll">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Emp ID</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Name</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Role</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Contact</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-buildings" class="hidden flex-1 p-8 overflow-hidden flex-col">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
+                <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                    <h2 class="text-lg font-bold text-gray-800">Managed Buildings</h2>
+                    <button onclick="openBuildingModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium"><span>+ Add Building</span></button>
+                </div>
+                <div class="flex-1 overflow-auto custom-scroll">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Building Name</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Type</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Floors</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Total Units</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="buildingTableBody" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div id="view-admins" class="hidden flex-1 p-8 overflow-hidden flex-col">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
                 <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
                     <h2 class="text-lg font-bold text-gray-800">System Administrators</h2>
-                    <button onclick="openAdminModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium">
-                        <span>+ Create Admin</span>
-                    </button>
+                    <button onclick="openAdminModal()" class="bg-ranconBlue text-white px-4 py-2 rounded-lg hover:bg-[#065a82] transition-colors flex items-center gap-2 shadow-sm text-sm font-medium"><span>+ Create Admin</span></button>
                 </div>
                 <div class="flex-1 overflow-auto custom-scroll">
                     <table class="w-full text-left border-collapse">
@@ -153,644 +185,118 @@
 
     <div id="ticketModal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm transition-opacity p-4 duration-300">
         <div class="bg-white w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl overflow-hidden flex flex-col border border-ranconBlue/20 relative animate-zoom-in">
-            <div class="px-6 py-4 flex justify-between items-center border-b border-gray-100 bg-white shrink-0">
-                <div class="flex items-center gap-3">
-                    <span class="text-lg font-bold text-gray-800">Ticket Details</span>
-                    <span id="modalCategoryBadge" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-200">CATEGORY</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex gap-2 text-xs font-medium" id="statusContainer">
-                        <button onclick="updateStatus('Pending')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="Pending">Pending</button>
-                        <button onclick="updateStatus('In Progress')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="In Progress">In Process</button>
-                        <button onclick="updateStatus('Resolved')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="Resolved">Resolved</button>
-                    </div>
-                    <div class="h-5 w-px bg-gray-200"></div>
-                    <button onclick="closeModal('ticketModal')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-            </div>
-
+            <div class="px-6 py-4 flex justify-between items-center border-b border-gray-100 bg-white shrink-0"><div class="flex items-center gap-3"><span class="text-lg font-bold text-gray-800">Ticket Details</span><span id="modalCategoryBadge" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-200">CATEGORY</span></div><div class="flex items-center gap-4"><div class="flex gap-2 text-xs font-medium" id="statusContainer"><button onclick="updateStatus('Pending')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="Pending">Pending</button><button onclick="updateStatus('In Progress')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="In Progress">In Process</button><button onclick="updateStatus('Resolved')" class="px-3 py-1.5 rounded-lg border border-transparent hover:bg-gray-50 text-gray-500 transition-all status-btn" data-status="Resolved">Resolved</button></div><div class="h-5 w-px bg-gray-200"></div><button onclick="closeModal('ticketModal')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div></div>
             <div class="flex flex-1 overflow-hidden">
                 <div class="w-[65%] p-8 overflow-y-auto space-y-6 custom-scroll">
-                    <div class="bg-blue-50/50 p-5 rounded-xl border border-blue-100 text-gray-800">
-                        <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Location
-                        </h4>
-                        <div class="grid grid-cols-3 gap-6 text-sm">
-                            <div><span class="block text-xs text-blue-500 font-semibold mb-1">Building</span><span id="modalBuilding" class="font-bold text-gray-900 text-base">-</span></div>
-                            <div><span class="block text-xs text-blue-500 font-semibold mb-1">Floor</span><span id="modalFloor" class="font-bold text-gray-900 text-base">-</span></div>
-                            <div><span class="block text-xs text-blue-500 font-semibold mb-1">Apartment</span><span id="modalApartment" class="font-bold text-gray-900 text-base">-</span></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-green-50/50 p-5 rounded-xl border border-green-100 text-gray-800">
-                        <h4 class="text-xs font-bold text-green-800 uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            Issue Description
-                        </h4>
-                        <p id="modalDetails" class="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">Loading...</p>
-                    </div>
-
-                    <div class="bg-gray-50/80 p-5 rounded-xl border border-gray-200">
-                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            Attachments
-                        </h4>
-                        <div id="modalImages" class="flex flex-wrap gap-3"></div>
-                    </div>
+                    <div class="bg-blue-50/50 p-5 rounded-xl border border-blue-100 text-gray-800"><h4 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-3 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Location</h4><div class="grid grid-cols-3 gap-6 text-sm"><div><span class="block text-xs text-blue-500 font-semibold mb-1">Building</span><span id="modalBuilding" class="font-bold text-gray-900 text-base">-</span></div><div><span class="block text-xs text-blue-500 font-semibold mb-1">Floor</span><span id="modalFloor" class="font-bold text-gray-900 text-base">-</span></div><div><span class="block text-xs text-blue-500 font-semibold mb-1">Apartment</span><span id="modalApartment" class="font-bold text-gray-900 text-base">-</span></div></div></div>
+                    <div class="bg-green-50/50 p-5 rounded-xl border border-green-100 text-gray-800"><h4 class="text-xs font-bold text-green-800 uppercase tracking-wider mb-2 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>Issue Description</h4><p id="modalDetails" class="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">Loading...</p></div>
+                    <div class="bg-gray-50/80 p-5 rounded-xl border border-gray-200"><h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>Attachments</h4><div id="modalImages" class="flex flex-wrap gap-3"></div></div>
                 </div>
-
                 <div class="w-[35%] border-l border-gray-200 bg-white flex flex-col h-full">
-                    
-                    <div class="p-6 border-b border-gray-100 flex-shrink-0">
-                        <div class="mb-6">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Reported By</h4>
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-ranconBlue text-white flex items-center justify-center text-sm font-bold shadow-sm" id="avatarInitial">U</div>
-                                <div>
-                                    <p class="font-bold text-gray-900 text-sm" id="modalName">-</p>
-                                    <p class="text-xs text-gray-500 font-medium" id="modalContact">-</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Assign Staff</label>
-                            <div class="flex gap-2">
-                                <div class="relative flex-1">
-                                    <select id="modalAssignStaff" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 text-sm text-gray-700 font-medium focus:ring-1 focus:ring-ranconBlue focus:border-ranconBlue cursor-pointer appearance-none">
-                                        <option value="">Unassigned</option>
-                                    </select>
-                                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                    </div>
-                                </div>
-                                <button onclick="assignStaff()" class="bg-ranconBlue hover:bg-[#065a82] text-white px-3 py-2 rounded-lg text-xs font-bold shadow-sm transition-all">Save</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 overflow-y-auto p-6 bg-gray-50 custom-scroll flex flex-col-reverse" id="activityLogContainer">
-                        </div>
-
-                    <div class="p-4 border-t border-gray-200 bg-white flex-shrink-0">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Internal Note / Requirement</label>
-                        <div class="relative">
-                            <textarea id="newNoteInput" rows="2" placeholder="Ex: Need 10m cable, Pump motor burned..." class="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-gray-700 focus:ring-2 focus:ring-ranconBlue focus:border-ranconBlue resize-none pr-10"></textarea>
-                            <button onclick="addTicketNote()" class="absolute right-2 bottom-2 text-ranconBlue hover:text-[#065a82] p-1 rounded-md hover:bg-blue-50 transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                            </button>
-                        </div>
-                    </div>
+                    <div class="p-6 border-b border-gray-100 flex-shrink-0"><div class="mb-6"><h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Reported By</h4><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-ranconBlue text-white flex items-center justify-center text-sm font-bold shadow-sm" id="avatarInitial">U</div><div><p class="font-bold text-gray-900 text-sm" id="modalName">-</p><p class="text-xs text-gray-500 font-medium" id="modalContact">-</p></div></div></div><div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Assign Staff</label><div class="flex gap-2"><div class="relative flex-1"><select id="modalAssignStaff" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 text-sm text-gray-700 font-medium focus:ring-1 focus:ring-ranconBlue focus:border-ranconBlue cursor-pointer appearance-none"><option value="">Unassigned</option></select><div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></div></div><button onclick="assignStaff()" class="bg-ranconBlue hover:bg-[#065a82] text-white px-3 py-2 rounded-lg text-xs font-bold shadow-sm transition-all">Save</button></div></div></div>
+                    <div class="flex-1 overflow-y-auto p-6 bg-gray-50 custom-scroll flex flex-col-reverse" id="activityLogContainer"></div>
+                    <div class="p-4 border-t border-gray-200 bg-white flex-shrink-0"><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Internal Note</label><div class="relative"><textarea id="newNoteInput" rows="2" placeholder="Write a note..." class="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-gray-700 focus:ring-2 focus:ring-ranconBlue focus:border-ranconBlue resize-none pr-10"></textarea><button onclick="addTicketNote()" class="absolute right-2 bottom-2 text-ranconBlue hover:text-[#065a82] p-1 rounded-md hover:bg-blue-50 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg></button></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="imageViewer" class="fixed inset-0 z-[100] hidden flex items-center justify-center" aria-modal="true">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" onclick="closeImageViewer()"></div>
-        <button onclick="closeImageViewer()" class="fixed top-6 right-6 z-[110] text-white/80 hover:text-white transition-colors bg-black/30 hover:bg-black/50 rounded-full p-2 backdrop-blur-sm">
-            <svg class="w-8 h-8 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="relative z-10 p-4 max-w-7xl w-full flex items-center justify-center pointer-events-none">
-            <img id="fullImage" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-2xl border border-white/10 object-contain transform transition-transform duration-300 scale-95 opacity-0 pointer-events-auto" alt="Full View">
-        </div>
-    </div>
+    <div id="imageViewer" class="fixed inset-0 z-[100] hidden flex items-center justify-center" aria-modal="true"><div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" onclick="closeImageViewer()"></div><button onclick="closeImageViewer()" class="fixed top-6 right-6 z-[110] text-white/80 hover:text-white transition-colors bg-black/30 hover:bg-black/50 rounded-full p-2 backdrop-blur-sm"><svg class="w-8 h-8 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button><div class="relative z-10 p-4 max-w-7xl w-full flex items-center justify-center pointer-events-none"><img id="fullImage" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-2xl border border-white/10 object-contain transform transition-transform duration-300 scale-95 opacity-0 pointer-events-auto" alt="Full View"></div></div>
 
+    <div id="createAdminModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm"><div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"><div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="text-lg font-bold text-gray-800">Create New Admin</h3><button onclick="closeModal('createAdminModal')" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button></div><form id="createAdminForm" class="p-6 space-y-4"><div><label class="block text-sm font-medium text-gray-700">Full Name</label><input type="text" id="newAdminName" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="newAdminEmail" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="newAdminPhone" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Password</label><input type="password" id="newAdminPassword" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><button type="submit" class="w-full bg-ranconBlue text-white py-2 rounded-lg hover:bg-[#065a82] font-medium">Create Admin</button></form></div></div>
     <div id="staffModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm"><div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"><div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="text-lg font-bold text-gray-800" id="staffModalTitle">Add Staff</h3><button onclick="closeModal('staffModal')" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button></div><form id="staffForm" class="p-6 space-y-4"><input type="hidden" id="staffId"><div><label class="block text-sm font-medium text-gray-700">Emp ID</label><input type="text" id="staffEmpId" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Name</label><input type="text" id="staffName" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Role</label><select id="staffRole" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"><option value="Technician">Technician</option><option value="Support Agent">Support Agent</option><option value="Manager">Manager</option></select></div><div><label class="block text-sm font-medium text-gray-700">Contact</label><input type="text" id="staffContact" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Status</label><select id="staffStatus" class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div><button type="submit" class="w-full bg-ranconBlue text-white py-2 rounded-lg hover:bg-[#065a82] font-medium">Save Staff</button></form></div></div>
     <div id="buildingModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm"><div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"><div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="text-xl font-bold text-gray-800" id="modalTitle">Add New Building</h3><button onclick="closeModal('buildingModal')" class="text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button></div><form id="buildingForm" class="p-8 space-y-6"><input type="hidden" id="buildingId"><div><label class="block text-sm font-semibold text-gray-700 mb-1">Building Name</label><input type="text" id="bName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ranconBlue outline-none"></div><div><label class="block text-sm font-semibold text-gray-700 mb-1">Building Type</label><select id="bType" onchange="toggleUnitInput()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ranconBlue outline-none"><option value="Residential">Residential</option><option value="Commercial">Commercial</option></select></div><div class="grid grid-cols-2 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Total Floors</label><input type="number" id="bFloors" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ranconBlue outline-none"></div><div id="unitInputGroup"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Units Per Floor</label><input type="number" id="bUnits" min="1" value="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ranconBlue outline-none"><p class="text-[10px] text-gray-500 mt-1 italic">Generates: A1, B1...</p></div></div><button type="submit" class="w-full bg-ranconBlue hover:bg-[#065a82] text-white font-bold py-3.5 rounded-xl shadow-lg transition-all active:scale-95">Save Building</button></form></div></div>
     <div id="unitModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm"><div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[80vh] flex flex-col"><div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="text-lg font-bold text-gray-800">Manage Units</h3><button onclick="closeModal('unitModal')" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button></div><div class="p-6 overflow-y-auto flex-1 custom-scroll"><table class="w-full text-sm text-left"><thead><tr class="text-gray-500 border-b"><th>Floor</th><th>Unit Name</th><th>Action</th></tr></thead><tbody id="unitListBody"></tbody></table></div></div></div>
-    <div id="profileModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm"><div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"><div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="text-lg font-bold text-gray-800">Profile Settings</h3><button onclick="closeModal('profileModal')" class="text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button></div><div class="p-8 overflow-y-auto custom-scroll"><form id="profileForm" class="space-y-6"><div class="flex items-center gap-6"><div class="relative group cursor-pointer" onclick="document.getElementById('profileUpload').click()"><img id="modalAvatarPreview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-100 shadow-md"><div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="text-white text-xs font-bold">Change</span></div><input type="file" id="profileUpload" name="avatar" accept="image/*" class="hidden" onchange="previewAvatar(this)"></div><div><h4 class="text-xl font-bold text-gray-800" id="modalProfileName">Admin</h4><p class="text-sm text-gray-500">Update your details.</p></div></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-700">Full Name</label><input type="text" name="name" id="pName" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" name="phone" id="pPhone" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-ranconBlue"></div><div class="col-span-2"><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" name="email" id="pEmail" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-ranconBlue"></div></div><div class="flex justify-end"><button type="submit" class="bg-ranconBlue text-white px-6 py-2 rounded-lg hover:bg-[#065a82] shadow-md">Save Changes</button></div></form><hr class="my-8 border-gray-100"><form id="passwordForm" class="space-y-4"><h4 class="text-md font-bold text-gray-800">Security</h4><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-700">Current Password</label><input type="password" id="currPass" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-ranconBlue"></div><div><label class="block text-sm font-medium text-gray-700">New Password</label><input type="password" id="newPass" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-ranconBlue"></div></div><div class="flex justify-end"><button type="submit" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50">Update Password</button></div></form></div></div></div>
-    <div id="createAdminModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-800">Create New Admin</h3>
-                <button onclick="closeModal('createAdminModal')" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button>
+    <div id="profileModal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-zoom-in">
+            
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="text-xl font-bold text-gray-800">Account Settings</h3>
+                <button onclick="closeModal('profileModal')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <form id="createAdminForm" class="p-6 space-y-4">
-                <div><label class="block text-sm font-medium text-gray-700">Full Name</label><input type="text" id="newAdminName" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="newAdminEmail" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="newAdminPhone" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Password</label><input type="password" id="newAdminPassword" required class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-ranconBlue"></div>
-                <button type="submit" class="w-full bg-ranconBlue text-white py-2 rounded-lg hover:bg-[#065a82] font-medium">Create Admin</button>
-            </form>
+
+            <div class="p-8 overflow-y-auto custom-scroll">
+                
+                <form id="profileForm" class="space-y-8">
+                    <div class="flex items-center gap-6">
+                        <div class="relative group cursor-pointer" onclick="document.getElementById('profileUpload').click()">
+                            <img id="modalAvatarPreview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-100 shadow-md transition-transform group-hover:scale-105">
+                            <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <input type="file" id="profileUpload" name="avatar" accept="image/*" class="hidden" onchange="previewAvatar(this)">
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-900" id="modalProfileName">Admin</h4>
+                            <p class="text-sm text-gray-500">Administrator</p>
+                            <button type="button" onclick="document.getElementById('profileUpload').click()" class="mt-2 text-sm text-ranconBlue font-medium hover:underline">Change Photo</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
+                            <input type="text" name="name" id="pName" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all outline-none">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
+                            <input type="text" name="phone" id="pPhone" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all outline-none">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                            <input type="email" name="email" id="pEmail" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-ranconBlue hover:bg-[#065a82] text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all active:scale-95">
+                            Save Profile Changes
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-8 border-gray-200">
+
+                <form id="passwordForm" class="space-y-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <h4 class="text-lg font-bold text-gray-800">Change Password</h4>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Current Password</label>
+                            <input type="password" id="currPass" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all outline-none">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">New Password</label>
+                            <input type="password" id="newPass" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-ranconBlue/20 focus:border-ranconBlue transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 px-6 py-2.5 rounded-lg font-medium transition-all active:scale-95">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+
+            </div>
         </div>
     </div>
-
+    <script src="../js/dashboard/state.js"></script>
+    <script src="../js/dashboard/ui.js"></script>
+    <script src="../js/dashboard/tickets.js"></script>
+    <script src="../js/dashboard/staff.js"></script>
+    <script src="../js/dashboard/buildings.js"></script>
+    <script src="../js/dashboard/settings.js"></script>
     <script>
-        const adminData = localStorage.getItem("adminData");
-            if (!adminData) {
-            window.location.href = "/login.html"; // Redirect if not logged in
-            }
-            const currentAdmin = JSON.parse(adminData);
-            const API_URL = "http://localhost:3000/api";
-            let allTickets = [];
-            let allStaff = [];
-            let allBuildings = [];
-            let currentTicketId = null;
-
-            // Navigation
-            function switchView(viewName) {
-            document.getElementById("view-tickets").classList.add("hidden");
-            document.getElementById("view-staff").classList.add("hidden");
-            document.getElementById("view-buildings").classList.add("hidden");
-            document.getElementById('view-admins').classList.add('hidden');
-            document.getElementById('nav-admins').className = "...inactive...";
-
-            document.getElementById("nav-tickets").className =
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all inactive-nav font-medium text-sm";
-            document.getElementById("nav-staff").className =
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all inactive-nav font-medium text-sm";
-            document.getElementById("nav-buildings").className =
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all inactive-nav font-medium text-sm";
-
-            document.getElementById(`view-${viewName}`).classList.remove("hidden");
-            document.getElementById(`nav-${viewName}`).className =
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all active-nav font-medium text-sm";
-
-            const titles = {
-                tickets: "Support Overview",
-                staff: "Staff Management",
-                buildings: "Building Management",
-            };
-            document.getElementById("pageTitle").innerText = titles[viewName];
-
-            if (viewName === 'admins') {
-                document.getElementById('pageTitle').innerText = 'Admin Management';
-                fetchAdmins();
-            }
-            else if (viewName === "staff") fetchStaff();
-            else if (viewName === "buildings") fetchBuildings();
-            else fetchTickets();
-            }
-
-            // Tickets
-            async function fetchStats() {
-            try {
-                const res = await fetch(`${API_URL}/admin/stats`);
-                const data = await res.json();
-                document.getElementById("totalCount").innerText = data.total;
-                document.getElementById("pendingCount").innerText = data.pending;
-                document.getElementById("resolvedCount").innerText = data.resolved;
-            } catch (e) {}
-            }
-
-            async function fetchTickets() {
-            try {
-                const res = await fetch(`${API_URL}/admin/tickets`);
-                allTickets = await res.json();
-                const tbody = document.getElementById("ticketTableBody");
-                tbody.innerHTML = "";
-                allTickets.forEach((t) => {
-                const statusColor =
-                    t.status === "Resolved"
-                    ? "bg-green-100 text-green-700"
-                    : t.status === "In Progress"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-yellow-100 text-yellow-700";
-                const assignedHtml = t.staff_name
-                    ? `<div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-ranconBlue text-white flex items-center justify-center text-xs font-bold shadow-sm">${t.staff_name.charAt(0)}</div><span class="text-sm font-medium text-gray-700">${t.staff_name}</span></div>`
-                    : `<span class="text-xs text-gray-400 italic">Unassigned</span>`;
-                tbody.innerHTML += `<tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors"><td class="px-6 py-4 font-bold text-gray-400">#${t.id}</td><td class="px-6 py-4"><div class="font-medium text-gray-900">${t.name}</div><div class="text-xs text-gray-400">${t.contact}</div></td><td class="px-6 py-4"><div class="text-sm text-gray-800">${t.building_name}</div><div class="text-xs text-gray-500">${t.floor}, ${t.apartment}</div></td><td class="px-6 py-4"><span class="text-xs font-bold text-ranconBlue bg-blue-50 px-2 py-1 rounded-md border border-blue-100">${t.category}</span></td><td class="px-6 py-4">${assignedHtml}</td><td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor}">${t.status}</span></td><td class="px-6 py-4"><button onclick="openTicketModal(${t.id})" class="text-gray-500 hover:text-ranconBlue border border-gray-200 px-3 py-1 rounded-lg hover:bg-white hover:border-ranconBlue transition-all shadow-sm">View</button></td></tr>`;
-                });
-                fetchStats();
-            } catch (e) {
-                console.error(e);
-            }
-            }
-
-            async function openTicketModal(id) {
-            const ticket = allTickets.find((t) => t.id === id);
-            if (!ticket) return;
-            currentTicketId = ticket.id;
-
-            document.getElementById("modalCategoryBadge").innerText = ticket.category;
-            document.querySelectorAll(".status-btn").forEach((btn) => {
-                btn.classList.remove(
-                "bg-gray-100",
-                "text-gray-900",
-                "font-bold",
-                "shadow-sm",
-                );
-                btn.classList.add("text-gray-500");
-                if (btn.dataset.status === ticket.status) {
-                btn.classList.add(
-                    "bg-gray-100",
-                    "text-gray-900",
-                    "font-bold",
-                    "shadow-sm",
-                );
-                btn.classList.remove("text-gray-500");
-                }
-            });
-
-            document.getElementById("modalBuilding").innerText = ticket.building_name;
-            document.getElementById("modalFloor").innerText = ticket.floor
-                ? `Level ${ticket.floor}`
-                : "N/A";
-            document.getElementById("modalApartment").innerText = ticket.apartment;
-            document.getElementById("modalDetails").innerText = ticket.details;
-
-            const imgContainer = document.getElementById("modalImages");
-            imgContainer.innerHTML = "";
-            if (ticket.images) {
-                ticket.images.split(",").forEach((img) => {
-                const cleanPath = img.replace(/\\/g, "/");
-                const url = `http://localhost:3000/${cleanPath}`;
-                imgContainer.innerHTML += `<div class="relative group w-20 h-20 rounded-xl overflow-hidden border border-gray-200 cursor-pointer shadow-sm hover:shadow-md transition-all" onclick="openImageViewer('${url}')"><img src="${url}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]"><svg class="w-6 h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg></div></div>`;
-                });
-            } else {
-                imgContainer.innerHTML = `<span class="text-xs text-gray-400 italic">No attachments</span>`;
-            }
-
-            document.getElementById("modalName").innerText = ticket.name;
-            document.getElementById("modalContact").innerText = ticket.contact;
-            document.getElementById("avatarInitial").innerText = ticket.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .substring(0, 2)
-                .toUpperCase();
-
-            await populateStaffDropdown(ticket.assigned_to);
-            fetchTicketUpdates(ticket.id); // Load notes
-            document.getElementById("ticketModal").classList.remove("hidden");
-            }
-
-            // --- NEW NOTE FUNCTIONS ---
-            async function fetchTicketUpdates(ticketId) {
-            const container = document.getElementById("activityLogContainer");
-            container.innerHTML =
-                '<div class="text-center py-4"><div class="w-6 h-6 border-2 border-gray-300 border-t-ranconBlue rounded-full animate-spin mx-auto"></div></div>';
-            try {
-                const res = await fetch(`${API_URL}/admin/ticket/${ticketId}/updates`);
-                const updates = await res.json();
-                container.innerHTML = "";
-                if (updates.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 opacity-50"><svg class="w-10 h-10 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg><p class="text-xs text-gray-500">No updates yet.</p></div>`;
-                return;
-                }
-                updates.forEach((u) => {
-                const date = new Date(u.created_at).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
-                container.innerHTML += `<div class="mb-4 last:mb-0"><div class="flex justify-between items-end mb-1"><span class="text-[10px] font-bold text-ranconBlue bg-blue-100 px-2 py-0.5 rounded-full">ADMIN</span><span class="text-[10px] text-gray-400">${date}</span></div><div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 shadow-sm text-sm text-gray-700 leading-snug">${u.note}</div></div>`;
-                });
-            } catch (e) {
-                console.error(e);
-            }
-            }
-
-            async function addTicketNote() {
-            const input = document.getElementById("newNoteInput");
-            const note = input.value.trim();
-            if (!note || !currentTicketId) return;
-            input.value = "";
-            await fetch(`${API_URL}/admin/ticket/${currentTicketId}/updates`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ note }),
-            });
-            fetchTicketUpdates(currentTicketId);
-            }
-
-            // Utils
-            function openImageViewer(url) {
-            document.getElementById("fullImage").src = url;
-            document.getElementById("imageViewer").classList.remove("hidden");
-            setTimeout(() => {
-                document
-                .getElementById("fullImage")
-                .classList.remove("scale-95", "opacity-0");
-                document
-                .getElementById("fullImage")
-                .classList.add("scale-100", "opacity-100");
-            }, 10);
-            }
-            function closeImageViewer() {
-            const img = document.getElementById("fullImage");
-            img.classList.remove("scale-100", "opacity-100");
-            img.classList.add("scale-95", "opacity-0");
-            setTimeout(() => {
-                document.getElementById("imageViewer").classList.add("hidden");
-            }, 300);
-            }
-            async function updateStatus(status) {
-            await fetch(`${API_URL}/admin/ticket/${currentTicketId}/status`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status }),
-            });
-            closeModal("ticketModal");
-            fetchTickets();
-            }
-            async function assignStaff() {
-            const staffId = document.getElementById("modalAssignStaff").value;
-            if (!currentTicketId) return;
-            await fetch(`${API_URL}/admin/ticket/${currentTicketId}/assign`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ staff_id: staffId }),
-            });
-            alert("Assignment Updated!");
-            closeModal("ticketModal");
-            fetchTickets();
-            }
-            async function populateStaffDropdown(selectedStaffId) {
-            const select = document.getElementById("modalAssignStaff");
-            select.innerHTML = '<option value="">Unassigned</option>';
-            try {
-                if (allStaff.length === 0) {
-                const res = await fetch(`${API_URL}/admin/staff`);
-                allStaff = await res.json();
-                }
-                allStaff.forEach((s) => {
-                if (s.status === "Active") {
-                    const option = document.createElement("option");
-                    option.value = s.id;
-                    option.text = `${s.name} (${s.role})`;
-                    if (s.id == selectedStaffId) option.selected = true;
-                    select.appendChild(option);
-                }
-                });
-            } catch (e) {}
-            }
-
-            // Staff, Building, Profile Logic (Same as before)
-            async function fetchStaff() {
-            try {
-                const res = await fetch(`${API_URL}/admin/staff`);
-                allStaff = await res.json();
-                const tbody = document.getElementById("staffTableBody");
-                tbody.innerHTML = "";
-                allStaff.forEach((s) => {
-                const statusClass =
-                    s.status === "Active"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700";
-                tbody.innerHTML += `<tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors"><td class="px-6 py-4 font-medium text-gray-900">${s.emp_id || "-"}</td><td class="px-6 py-4 font-medium text-gray-900">${s.name}</td><td class="px-6 py-4 text-gray-600">${s.role}</td><td class="px-6 py-4 text-gray-600">${s.contact}</td><td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusClass}">${s.status}</span></td><td class="px-6 py-4 flex gap-2"><button onclick="openStaffModal(${s.id})" class="text-blue-600 hover:text-blue-800 font-medium">Edit</button><button onclick="deleteStaff(${s.id})" class="text-red-600 hover:text-red-800 font-medium ml-2">Delete</button></td></tr>`;
-                });
-            } catch (e) {}
-            }
-            function openStaffModal(id = null) {
-            document.getElementById("staffModal").classList.remove("hidden");
-            if (id) {
-                const s = allStaff.find((i) => i.id === id);
-                document.getElementById("staffModalTitle").innerText = "Edit Staff";
-                document.getElementById("staffId").value = s.id;
-                document.getElementById("staffEmpId").value = s.emp_id;
-                document.getElementById("staffName").value = s.name;
-                document.getElementById("staffRole").value = s.role;
-                document.getElementById("staffContact").value = s.contact;
-                document.getElementById("staffStatus").value = s.status;
-            } else {
-                document.getElementById("staffModalTitle").innerText = "Add Staff";
-                document.getElementById("staffForm").reset();
-                document.getElementById("staffId").value = "";
-            }
-            }
-            async function deleteStaff(id) {
-            if (confirm("Delete staff?")) {
-                await fetch(`${API_URL}/admin/staff/${id}`, { method: "DELETE" });
-                fetchStaff();
-            }
-            }
-            document
-            .getElementById("staffForm")
-            .addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const id = document.getElementById("staffId").value;
-                const data = {
-                emp_id: document.getElementById("staffEmpId").value,
-                name: document.getElementById("staffName").value,
-                role: document.getElementById("staffRole").value,
-                contact: document.getElementById("staffContact").value,
-                status: document.getElementById("staffStatus").value,
-                };
-                await fetch(
-                id ? `${API_URL}/admin/staff/${id}` : `${API_URL}/admin/staff`,
-                {
-                    method: id ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                },
-                );
-                closeModal("staffModal");
-                fetchStaff();
-            });
-
-            function toggleUnitInput() {
-            const type = document.getElementById("bType").value;
-            const group = document.getElementById("unitInputGroup");
-            if (type === "Commercial") {
-                group.style.display = "none";
-                document.getElementById("bUnits").value = 1;
-            } else {
-                group.style.display = "block";
-            }
-            }
-            async function fetchBuildings() {
-            try {
-                const res = await fetch(`${API_URL}/admin/buildings`);
-                allBuildings = await res.json();
-                const tbody = document.getElementById("buildingTableBody");
-                tbody.innerHTML = "";
-                allBuildings.forEach((b) => {
-                tbody.innerHTML += `<tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors"><td class="px-6 py-4 font-medium text-gray-900">${b.name}</td><td class="px-6 py-4 text-gray-600">${b.type}</td><td class="px-6 py-4 text-gray-600">${b.total_floors}</td><td class="px-6 py-4 text-gray-600">${b.unit_count} Units</td><td class="px-6 py-4 flex gap-2"><button onclick="openBuildingModal(${b.id})" class="text-blue-600 hover:text-blue-800 font-medium border px-2 py-1 rounded">Edit</button><button onclick="viewUnits(${b.id})" class="text-gray-600 hover:text-gray-800 font-medium border px-2 py-1 rounded">Units</button><button onclick="deleteBuilding(${b.id})" class="text-red-600 hover:text-red-800 font-medium ml-2">Delete</button></td></tr>`;
-                });
-            } catch (e) {}
-            }
-            function openBuildingModal(id = null) {
-            document.getElementById("buildingModal").classList.remove("hidden");
-            if (id) {
-                const b = allBuildings.find((i) => i.id === id);
-                document.getElementById("modalTitle").innerText = "Edit Building";
-                document.getElementById("buildingId").value = b.id;
-                document.getElementById("bName").value = b.name;
-                document.getElementById("bType").value = b.type;
-                document.getElementById("bFloors").value = b.total_floors;
-                document.getElementById("bFloors").disabled = true;
-                document.getElementById("bUnits").disabled = true;
-                toggleUnitInput();
-            } else {
-                document.getElementById("modalTitle").innerText = "Add New Building";
-                document.getElementById("buildingForm").reset();
-                document.getElementById("buildingId").value = "";
-                document.getElementById("bFloors").disabled = false;
-                document.getElementById("bUnits").disabled = false;
-                toggleUnitInput();
-            }
-            }
-            async function viewUnits(id) {
-            const res = await fetch(`${API_URL}/admin/building/${id}/units`);
-            const units = await res.json();
-            const tbody = document.getElementById("unitListBody");
-            tbody.innerHTML = "";
-            units.forEach((u) => {
-                tbody.innerHTML += `<tr class="border-b last:border-0"><td class="py-3 text-gray-500">Floor ${u.floor_number}</td><td class="py-3"><input type="text" value="${u.unit_name}" id="unit-${u.id}" onblur="updateUnitName(${u.id})" class="border rounded px-2 py-1 w-full text-gray-800 focus:ring-ranconBlue"></td><td class="py-3 text-xs text-green-600">Auto-saved</td></tr>`;
-            });
-            document.getElementById("unitModal").classList.remove("hidden");
-            }
-            async function updateUnitName(id) {
-            await fetch(`${API_URL}/admin/unit/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                unit_name: document.getElementById(`unit-${id}`).value,
-                }),
-            });
-            }
-            async function deleteBuilding(id) {
-            if (confirm("Delete?")) {
-                await fetch(`${API_URL}/admin/buildings/${id}`, { method: "DELETE" });
-                fetchBuildings();
-            }
-            }
-            document
-            .getElementById("buildingForm")
-            .addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const id = document.getElementById("buildingId").value;
-                const data = {
-                type: document.getElementById("bType").value,
-                name: document.getElementById("bName").value,
-                total_floors: document.getElementById("bFloors").value,
-                units_per_floor:
-                    document.getElementById("bType").value === "Residential"
-                    ? document.getElementById("bUnits").value
-                    : 1,
-                };
-                await fetch(
-                id ? `${API_URL}/admin/buildings/${id}` : `${API_URL}/admin/buildings`,
-                {
-                    method: id ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                },
-                );
-                closeModal("buildingModal");
-                fetchBuildings();
-            });
-
-            function toggleProfileMenu() {
-            document.getElementById("profileMenu").classList.toggle("hidden");
-            }
-            function openProfileModal() {
-            document.getElementById("profileMenu").classList.add("hidden");
-            document.getElementById("profileModal").classList.remove("hidden");
-            fetchProfile();
-            }
-            function closeModal(id) {
-            document.getElementById(id).classList.add("hidden");
-            }
-            async function fetchProfile() {
-                try {
-                    const res = await fetch(`${API_URL}/admin/profile?id=${currentAdmin.id}`);
-                    const data = await res.json();
-                    document.getElementById("headerAdminName").innerText = data.name;
-                    if (data.avatar)
-                    document.getElementById("headerAvatar").src =
-                        `${API_URL.replace("/api", "")}/${data.avatar}`;
-                    document.getElementById("pName").value = data.name;
-                    document.getElementById("pEmail").value = data.email;
-                    document.getElementById("pPhone").value = data.phone;
-                    document.getElementById("modalProfileName").innerText = data.name;
-                    document.getElementById("modalAvatarPreview").src = data.avatar
-                    ? `${API_URL.replace("/api", "")}/${data.avatar}`
-                    : "https://ui-avatars.com/api/?name=Admin";
-                } catch (e) {}
-            }
-
-            // --- NEW ADMIN MANAGEMENT LOGIC ---
-            async function fetchAdmins() {
-                try {
-                    const res = await fetch(`${API_URL}/admin/admins`);
-                    const admins = await res.json();
-                    const tbody = document.getElementById('adminTableBody');
-                    tbody.innerHTML = '';
-                    admins.forEach(a => {
-                        const avatar = a.avatar ? `${API_URL.replace('/api', '')}/${a.avatar}` : `https://ui-avatars.com/api/?name=${a.name}&background=076C99&color=fff`;
-                        tbody.innerHTML += `
-                            <tr class="hover:bg-gray-50 border-b border-gray-50">
-                                <td class="px-6 py-4"><img src="${avatar}" class="w-8 h-8 rounded-full"></td>
-                                <td class="px-6 py-4 font-medium text-gray-900">${a.name}</td>
-                                <td class="px-6 py-4 text-gray-600">${a.email}</td>
-                                <td class="px-6 py-4 text-gray-600">${a.phone}</td>
-                                <td class="px-6 py-4 text-gray-400 text-xs">${new Date(a.created_at).toLocaleDateString()}</td>
-                            </tr>`;
-                    });
-                } catch(e) {}
-            }
-
-            function openAdminModal() {
-                document.getElementById('createAdminModal').classList.remove('hidden');
-            }
-
-            document.getElementById('createAdminForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const data = {
-                    name: document.getElementById('newAdminName').value,
-                    email: document.getElementById('newAdminEmail').value,
-                    phone: document.getElementById('newAdminPhone').value,
-                    password: document.getElementById('newAdminPassword').value
-                };
-                
-                const res = await fetch(`${API_URL}/admin/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await res.json();
-                if(res.ok) {
-                    alert("Admin Created!");
-                    closeModal('createAdminModal');
-                    document.getElementById('createAdminForm').reset();
-                    fetchAdmins();
-                } else {
-                    alert(result.error);
-                }
-            });
-            function logout() {
-                localStorage.removeItem("adminData");
-                window.location.href = "/login.html";
-            }
-            function previewAvatar(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                document.getElementById("modalAvatarPreview").src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-            }
-            document
-            .getElementById("profileForm")
-            .addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const fd = new FormData();
-                fd.append("name", document.getElementById("pName").value);
-                fd.append("email", document.getElementById("pEmail").value);
-                fd.append("phone", document.getElementById("pPhone").value);
-                if (document.getElementById("profileUpload").files[0])
-                fd.append("avatar", document.getElementById("profileUpload").files[0]);
-                const res = await fetch(`${API_URL}/admin/profile`, {
-                method: "POST",
-                body: fd,
-                });
-                const r = await res.json();
-                alert(r.message);
-                fetchProfile();
-            });
-
+        document.addEventListener('DOMContentLoaded', () => {
             fetchTickets();
             fetchProfile();
-
+        });
     </script>
 </body>
 </html>
