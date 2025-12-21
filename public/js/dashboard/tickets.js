@@ -71,6 +71,8 @@ async function fetchTickets() {
     } catch(e) { console.error(e); }
 }
 
+// ... inside public/js/dashboard/tickets.js
+
 async function openTicketModal(id) {
     const ticket = window.allTickets.find(t => t.id === id);
     if (!ticket) return;
@@ -92,13 +94,18 @@ async function openTicketModal(id) {
         if(btn.dataset.status === ticket.status) btn.classList.add('bg-gray-100', 'text-gray-900', 'font-bold', 'shadow-sm');
     });
 
-    // Images
+    // --- FIXED IMAGE RENDERING BLOCK ---
     const imgContainer = document.getElementById('modalImages');
     imgContainer.innerHTML = '';
+    
     if(ticket.images) {
         ticket.images.split(',').forEach(img => {
-            const cleanPath = img.replace(/\\/g, '/');
+            // FIX: 
+            // 1. .replace(/\\/g, '/')  -> Fixes Windows backslashes
+            // 2. .replace(/^public\//, '') -> Removes 'public/' from the start
+            const cleanPath = img.replace(/\\/g, '/').replace(/^public\//, '');
             const url = `/${cleanPath}`;
+
             imgContainer.innerHTML += `
                 <div class="relative group w-20 h-20 rounded-xl overflow-hidden border border-gray-200 cursor-pointer shadow-sm hover:shadow-md transition-all" onclick="openImageViewer('${url}')">
                     <img src="${url}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
@@ -110,11 +117,12 @@ async function openTicketModal(id) {
     } else { 
         imgContainer.innerHTML = `<span class="text-xs text-gray-400 italic">No attachments</span>`; 
     }
+    // -----------------------------------
 
     await populateStaffDropdown(ticket.assigned_to);
     fetchTicketUpdates(ticket.id);
     document.getElementById('ticketModal').classList.remove('hidden');
-}   
+} 
 
 // Activity Log Logic
 async function fetchTicketUpdates(ticketId) {
@@ -153,5 +161,7 @@ async function updateStatus(status) {
 async function assignStaff() {
     const staffId = document.getElementById('modalAssignStaff').value;
     await fetch(`${API_URL}/admin/ticket/${window.currentTicketId}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ staff_id: staffId }) });
-    alert("Assignment Updated!"); closeModal('ticketModal'); fetchTickets();
+    // alert("Assignment Updated!"); closeModal('ticketModal'); fetchTickets();
+    showToast("Staff Assigned Successfully", "success");
+    closeModal('ticketModal'); fetchTickets();
 }

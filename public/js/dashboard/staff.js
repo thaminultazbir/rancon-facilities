@@ -30,7 +30,13 @@ function openStaffModal(id=null) {
     }
 }
 
-async function deleteStaff(id) { if(confirm("Delete staff?")) { await fetch(`${API_URL}/admin/staff/${id}`, {method:'DELETE'}); fetchStaff(); } }
+async function deleteStaff(id) { 
+    if(confirm("Delete staff?")) { 
+        await fetch(`${API_URL}/admin/staff/${id}`, {method:'DELETE'}); 
+        showToast("Staff Member Deleted", "info"); // <--- NEW
+        fetchStaff(); 
+    } 
+}
 
 async function populateStaffDropdown(selectedStaffId) {
     const select = document.getElementById('modalAssignStaff');

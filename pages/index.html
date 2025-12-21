@@ -12,8 +12,14 @@
                 extend: {
                     colors: { ranconBlue: '#005a8d', ranconRed: '#d32f2f', bgGray: '#F3F4F6' },
                     fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    animation: { 'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
-                    keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } },
+                    animation: { 
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'scale-up': 'scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+                    },
+                    keyframes: { 
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        scaleUp: { '0%': { opacity: '0', transform: 'scale(0.8)' }, '100%': { opacity: '1', transform: 'scale(1)' } }
+                    },
                     boxShadow: { 'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.15)', 'glow': '0 0 15px rgba(0, 90, 141, 0.3)' }
                 }
             }
@@ -23,15 +29,26 @@
         body { -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.25em 1.25em; }
+        
+        /* Smooth scrolling for the whole page */
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased overflow-x-hidden selection:bg-ranconBlue selection:text-white">
 
-    <div class="mx-auto max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+    <div class="mx-auto max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden" id="appContainer">
 
-        <div class="relative h-[550px] w-full overflow-hidden">
-            <img id="parallax-bg" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" alt="Background" class="absolute inset-0 w-full h-[120%] object-cover transition-transform duration-75 will-change-transform">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
+        <div class="relative h-[550px] w-full overflow-hidden z-0">
+            
+            <img id="parallax-bg" 
+                 src="/img/background.jpg" 
+                 onerror="this.src='https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop'" 
+                 alt="Rancon Building" 
+                 class="absolute inset-0 w-full h-[120%] object-cover object-center transition-transform duration-75 will-change-transform">
+            
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-transparent"></div>
+
             <div class="relative z-10 flex flex-col items-center pt-24 px-8 text-center text-white">
                 <p class="text-xs font-semibold tracking-[0.3em] uppercase opacity-90 mb-4 animate-[fadeInUp_1s_ease-out_forwards]">Welcome to</p>
                 <h1 class="text-4xl font-serif tracking-wide leading-tight drop-shadow-lg opacity-0 animate-[fadeInUp_1s_0.2s_ease-out_forwards]">Rancon<br>Facilities</h1>
@@ -50,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-t-[3rem] shadow-premium pt-16 px-8 pb-10">
+            <div id="card-personal" class="bg-white rounded-t-[3rem] shadow-premium pt-16 px-8 pb-20 relative z-10 transition-transform duration-75 ease-out will-change-transform">
                 <h4 class="text-lg font-bold text-gray-900 mb-8 flex items-center gap-3">
                     <span class="w-1 h-6 bg-ranconBlue rounded-full"></span>
                     Personal Details
@@ -58,20 +75,17 @@
 
                 <div class="space-y-6">
                     <div class="group relative">
-                        <input type="text" id="name" name="name" required placeholder=" " 
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
+                        <input type="text" id="name" name="name" required placeholder=" " class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
                         <label for="name" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Your Name</label>
                     </div>
 
                     <div class="group relative">
-                        <input type="tel" id="contact" name="contact" required placeholder=" " 
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
+                        <input type="tel" id="contact" name="contact" required placeholder=" " class="peer w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconBlue transition-all placeholder-transparent">
                         <label for="contact" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconBlue">Contact Number</label>
                     </div>
 
                     <div class="relative">
-                        <select id="buildingType" name="buildingType" required onchange="handleTypeChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all cursor-pointer">
+                        <select id="buildingType" name="buildingType" required onchange="handleTypeChange()" class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all cursor-pointer">
                             <option value="" disabled selected>Building Type</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
@@ -79,35 +93,34 @@
                     </div>
 
                     <div class="relative">
-                        <select id="buildingName" name="buildingName" required disabled onchange="handleBuildingChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 disabled:bg-gray-100 cursor-pointer">
+                        <select id="buildingName" name="buildingName" required disabled onchange="handleBuildingChange()" class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 disabled:bg-gray-100 cursor-pointer">
                             <option value="">Select Building</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <select id="floor" name="floor" required disabled onchange="handleFloorChange()"
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
+                        <select id="floor" name="floor" required disabled onchange="handleFloorChange()" class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
                             <option value="">Floor</option>
                         </select>
-                        <select id="apartment" name="apartment" required disabled
-                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
+                        <select id="apartment" name="apartment" required disabled class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconBlue appearance-none transition-all disabled:opacity-50 cursor-pointer">
                             <option value="">Unit</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gray-50 rounded-t-[3rem] -mt-10 pt-16 px-8 pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10 border-t border-white">
-                <h4 class="text-lg font-bold text-gray-900 mb-8 flex items-center gap-3">
+            <div id="card-issue" class="bg-gray-50 rounded-t-[3rem] -mt-10 pt-16 px-8 pb-10 shadow-[0_-10px_60px_rgba(0,0,0,0.1)] relative z-20 border-t border-white overflow-hidden">
+                
+                <div class="absolute top-0 right-0 w-64 h-64 bg-ranconRed/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" id="ambient-orb"></div>
+
+                <h4 class="text-lg font-bold text-gray-900 mb-8 flex items-center gap-3 relative z-10">
                     <span class="w-1 h-6 bg-ranconRed rounded-full"></span>
                     Issue Details
                 </h4>
 
-                <div class="space-y-6">
+                <div class="space-y-6 relative z-10">
                     <div class="relative">
-                        <select name="Category" required
-                            class="w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconRed appearance-none transition-all cursor-pointer">
+                        <select name="Category" required class="w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 focus:outline-none focus:border-ranconRed appearance-none transition-all cursor-pointer shadow-sm">
                             <option value="" disabled selected>Select Category</option>
                             <option value="Structural Observation">Structural Observation</option>
                             <option value="Material Concern">Material Concern</option>
@@ -118,8 +131,7 @@
                     </div>
 
                     <div class="group relative">
-                        <textarea id="details" name="details" required rows="4" placeholder=" "
-                            class="peer w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconRed resize-none transition-all placeholder-transparent"></textarea>
+                        <textarea id="details" name="details" required rows="4" placeholder=" " class="peer w-full px-4 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-ranconRed resize-none transition-all placeholder-transparent shadow-sm"></textarea>
                         <label for="details" class="pointer-events-none absolute left-4 -top-2.5 bg-white px-1 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-ranconRed">Describe the issue...</label>
                     </div>
 
@@ -129,7 +141,7 @@
                         
                         <div class="flex items-center gap-4">
                             <button type="button" onclick="document.getElementById('fileInput').click()" 
-                                class="w-14 h-14 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-ranconBlue hover:text-ranconBlue hover:bg-blue-50 transition-all group">
+                                class="w-14 h-14 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-ranconBlue hover:text-ranconBlue hover:bg-blue-50 transition-all group bg-white shadow-sm">
                                 <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                             </button>
                             <div class="flex-1 h-14 flex items-center overflow-x-auto no-scrollbar gap-2" id="fileListContainer">
@@ -145,6 +157,18 @@
             </div>
         </form>
 
+        <div id="successScreen" class="fixed inset-0 z-50 hidden bg-white flex-col items-center justify-center text-center p-8 animate-fade-in-up">
+            <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-green-100/50 animate-scale-up">
+                <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-serif font-bold text-gray-900 mb-3 leading-tight">Your report<br>has been submitted</h2>
+            <div class="h-1 w-16 bg-gray-200 rounded-full mx-auto my-6"></div>
+            <p class="text-gray-500 text-sm leading-relaxed font-medium">This matter is under review.<br>You will be contacted shortly.</p>
+            <button onclick="resetApp()" class="mt-12 px-10 py-3.5 bg-gray-900 hover:bg-black text-white rounded-xl text-sm font-bold tracking-wide shadow-xl transform transition-all active:scale-95">Back to Home</button>
+        </div>
+
         <div id="loader" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-white/80 backdrop-blur-md">
             <div class="w-16 h-16 border-4 border-gray-200 border-t-ranconBlue rounded-full animate-spin"></div>
             <p class="mt-4 text-ranconBlue font-medium tracking-wide animate-pulse">Processing...</p>
@@ -153,6 +177,49 @@
     </div>
 
     <script>
+        // --- PARALLAX LOGIC (NEW) ---
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            
+            // 1. Header Background (Existing)
+            const bg = document.getElementById('parallax-bg');
+            if(bg) bg.style.transform = `translateY(${scrollY * 0.5}px)`;
+
+            // 2. Stacking Cards Effect (Premium Feel)
+            const cardPersonal = document.getElementById('card-personal');
+            const cardIssue = document.getElementById('card-issue');
+            const ambientOrb = document.getElementById('ambient-orb');
+
+            if (cardPersonal && cardIssue) {
+                // Determine when to start animating based on viewport
+                const personalRect = cardPersonal.getBoundingClientRect();
+                
+                // Only animate when the first card is leaving the view
+                if (scrollY > 100) {
+                    // Move Personal Card DOWN slightly slower than scroll (0.2 speed)
+                    // This makes the Issue Card (which moves at normal speed) slide OVER it faster
+                    // Also scale it down slightly for depth
+                    const offset = (scrollY - 100) * 0.15;
+                    const scale = 1 - (scrollY * 0.0005); // Subtle scale down
+                    
+                    // Limit the effect so it doesn't break layout
+                    if (scale > 0.95) {
+                        cardPersonal.style.transform = `translateY(${offset}px) scale(${scale})`;
+                        cardPersonal.style.opacity = `${1 - (scrollY * 0.001)}`; // Fade out slightly
+                    }
+                } else {
+                    cardPersonal.style.transform = 'translateY(0) scale(1)';
+                    cardPersonal.style.opacity = '1';
+                }
+
+                // Ambient Orb Parallax (Opposite direction for floaty feel)
+                if(ambientOrb) {
+                    ambientOrb.style.transform = `translateY(${scrollY * -0.1}px) translateX(50%)`;
+                }
+            }
+        });
+
+        // ... (Rest of your existing Building, File Upload, and Submit Logic) ...
         let allBuildings = [];
         let currentBuildingUnits = [];
         const typeSelect = document.getElementById('buildingType');
@@ -160,7 +227,13 @@
         const floorSelect = document.getElementById('floor');
         const aptSelect = document.getElementById('apartment');
 
-        window.onload = function() { fetchBuildingData(); };
+        window.onload = function() { 
+            fetchBuildingData(); 
+            const savedName = localStorage.getItem('ranconUserName');
+            const savedContact = localStorage.getItem('ranconUserContact');
+            if (savedName) document.getElementById('name').value = savedName;
+            if (savedContact) document.getElementById('contact').value = savedContact;
+        };
 
         async function fetchBuildingData() {
             try {
@@ -180,7 +253,6 @@
             resetSelect(buildingSelect, "Select Building");
             resetSelect(floorSelect, "Floor");
             resetSelect(aptSelect, "Unit");
-            
             const filtered = allBuildings.filter(b => b.type === selectedType);
             if (filtered.length > 0) {
                 filtered.forEach(b => {
@@ -197,12 +269,10 @@
             resetSelect(floorSelect, "Loading...");
             resetSelect(aptSelect, "Unit");
             if (!buildingId) return;
-
             try {
                 const response = await fetch(`/api/admin/building/${buildingId}/units`);
                 currentBuildingUnits = await response.json();
                 const uniqueFloors = [...new Set(currentBuildingUnits.map(u => u.floor_number))].sort((a, b) => a - b);
-                
                 resetSelect(floorSelect, "Floor");
                 uniqueFloors.forEach(f => {
                     const opt = document.createElement('option');
@@ -226,10 +296,8 @@
             aptSelect.disabled = false;
         }
 
-        // File Upload Logic
         const fileInput = document.getElementById('fileInput');
         const fileListContainer = document.getElementById('fileListContainer');
-        
         fileInput.addEventListener('change', function() {
             fileListContainer.innerHTML = '';
             if (this.files.length > 0) {
@@ -252,35 +320,47 @@
             }
         });
 
-        window.addEventListener('scroll', () => {
-            const scroll = window.scrollY;
-            document.getElementById('parallax-bg').style.transform = `translateY(${scroll * 0.5}px)`;
-        });
-
-        document.getElementById('ticketForm').addEventListener('submit', function(e) {
+        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            document.getElementById('loader').style.display = 'flex';
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
             const formData = new FormData(this);
             const selectedBuildingName = buildingSelect.options[buildingSelect.selectedIndex].text;
             formData.set('buildingName', selectedBuildingName);
 
-            fetch('/api/submit-ticket', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                if(data.error) alert(data.error);
-                else {
-                    alert("Report Submitted Successfully!");
-                    this.reset();
-                    fileListContainer.innerHTML = '<span class="text-sm text-gray-400 italic pl-1">No photos added</span>';
-                    handleTypeChange();
+            try {
+                const response = await fetch('/api/submit-ticket', { method: 'POST', body: formData });
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    const text = await response.text();
+                    throw new Error(`Server Error (${response.status}): ${text.substring(0, 100)}...`);
                 }
-            })
-            .catch(() => {
-                document.getElementById('loader').style.display = 'none';
-                alert("Connection Error");
-            });
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error || `Error ${response.status}`);
+
+                localStorage.setItem('ranconUserName', document.getElementById('name').value);
+                localStorage.setItem('ranconUserContact', document.getElementById('contact').value);
+                document.getElementById('successScreen').classList.remove('hidden');
+                document.getElementById('successScreen').classList.add('flex');
+            } catch (error) {
+                console.error("Submission Failed:", error);
+                alert("Submission Failed: " + error.message);
+            } finally { loader.style.display = 'none'; }
         });
+
+        function resetApp() {
+            document.getElementById('successScreen').classList.add('hidden');
+            document.getElementById('successScreen').classList.remove('flex');
+            const form = document.getElementById('ticketForm');
+            const tempName = document.getElementById('name').value;
+            const tempContact = document.getElementById('contact').value;
+            form.reset();
+            document.getElementById('name').value = tempName;
+            document.getElementById('contact').value = tempContact;
+            fileListContainer.innerHTML = '<span class="text-sm text-gray-400 italic pl-1">No photos added</span>';
+            handleTypeChange();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     </script>
 </body>
 </html>

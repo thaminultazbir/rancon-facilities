@@ -48,8 +48,13 @@ async function viewUnits(id) {
 }
 
 async function updateUnitName(id) { await fetch(`${API_URL}/admin/unit/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({unit_name: document.getElementById(`unit-${id}`).value}) }); }
-async function deleteBuilding(id) { if(confirm("Delete?")) { await fetch(`${API_URL}/admin/buildings/${id}`, {method:'DELETE'}); fetchBuildings(); } }
-
+async function deleteBuilding(id) { 
+    if(confirm("Delete?")) { 
+        await fetch(`${API_URL}/admin/buildings/${id}`, {method:'DELETE'}); 
+        showToast("Building Deleted", "info"); // <--- NEW
+        fetchBuildings(); 
+    } 
+}
 document.getElementById('buildingForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const id = document.getElementById('buildingId').value;

@@ -40,12 +40,12 @@ document.getElementById('createAdminForm').addEventListener('submit', async func
         const result = await res.json();
         
         if(res.ok) { 
-            alert("Admin Created Successfully!"); 
+            showToast("Admin Created Successfully!", "success"); // <--- NEW
             closeModal('createAdminModal'); 
             document.getElementById('createAdminForm').reset(); 
             fetchAdmins(); 
         } else { 
-            alert(result.error || "Failed to create admin"); 
+            showToast(result.error || "Failed to create admin", "error"); // <--- NEW
         }
     } catch(err) { alert("Server Error"); }
 });
@@ -112,9 +112,9 @@ document.getElementById('profileForm').addEventListener('submit', async function
     try {
         const res = await fetch(`${API_URL}/admin/profile`, { method: 'POST', body: fd }); 
         const r = await res.json(); 
-        alert(r.message); 
+        showToast("Profile Updated Successfully", "success"); // <--- NEW
         fetchProfile(); 
-    } catch(err) { alert("Failed to update profile"); }
+    } catch(err) { showToast("Failed to update profile", "error"); }
 });
 
 
@@ -142,10 +142,10 @@ document.getElementById('passwordForm').addEventListener('submit', async functio
         const result = await res.json();
         
         if(res.ok) {
-            alert("Password updated successfully!");
+            showToast("Password updated successfully!", "success"); // <--- NEW
             document.getElementById('passwordForm').reset();
         } else {
-            alert(result.error || "Failed to update password");
+            showToast(result.error || "Failed to update password", "error");
         }
     } catch(err) { alert("Server connection error"); }
 });
