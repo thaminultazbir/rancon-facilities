@@ -51,3 +51,29 @@ function closeImageViewer() {
     img.classList.add('scale-95', 'opacity-0');
     setTimeout(() => { viewer.classList.add('hidden'); }, 300);
 }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    
+    // Toggle classes
+    if (sidebar.classList.contains('-translate-x-full')) {
+        // Open
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+    } else {
+        // Close
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+    }
+}
+
+const originalSwitchView = window.switchView || switchView;
+window.switchView = function(viewName) {
+    originalSwitchView(viewName); // Call original logic
+    
+    // If on mobile (screen width < 768px), close sidebar after click
+    if (window.innerWidth < 768) {
+        toggleSidebar();
+    }
+};
