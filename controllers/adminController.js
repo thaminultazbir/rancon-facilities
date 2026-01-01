@@ -87,27 +87,34 @@ exports.createAdmin = (req, res) => {
     });
 };
 
+// controllers/adminController.js
+
 exports.getTickets = (req, res) => {
     const adminId = req.query.admin_id;
 
+    // DEBUG 1: Did the frontend actually send the ID?
+    console.log("------------------------------------------------");
+    console.log("Request for tickets received.");
+    console.log("Query Params:", req.query); 
 
-    
+    if (!adminId) {
+        console.log("ERROR: Admin ID missing from URL query.");
+        return res.status(400).json({ error: "Admin ID required" });
+    }
 
-
-
-
-
-    if (!adminId) return res.status(400).json({ error: "Admin ID required" });
-
-    db.query("SELECT role FROM admins WHERE id = ?", [adminId], async (err, result) => {
-
-
-        
-        if (err || result.length === 0) return res.status(401).json({ error: "Unauthorized" });
+    // 1. Check Role
+    db.query("SELECT role, name FROM admins WHERE id = ?", [adminId], async (err, result) => {
+        if (err || result.length === 0) {
+            console.log("ERROR: Admin not found or DB error.");
+            return res.status(401).json({ error: "Unauthorized" });
+        }
 
         const role = result[0].role;
+        const adminName = result[0].name;
+
+        console.log(`Admin Found: ${adminName} (Role: ${role})`);
         
-        // BASE QUERY: Note we are now joining ON t.building_id
+        // 2. Base Query
         let query = `
             SELECT t.*, b.name as building_name, s.name as staff_name 
             FROM tickets t 
@@ -117,33 +124,38 @@ exports.getTickets = (req, res) => {
         `; 
         let params = [];
 
-        // STRICT SECURITY FOR PROJECT ADMIN
+        // 3. Project Admin Security Logic
         if (role === 'Project Admin') {
-            // 1. Get Assigned Building IDs
             const buildingIds = await getAssignedBuildings(adminId);
-            
-            console.log(`[DEBUG] Admin: ${result[0].name}, Role: ${role}, Assigned IDs: ${buildingIds}`);
 
-            // 2. If Unassigned, return empty immediately
+            console.log(`Assigned Building IDs:`, buildingIds);
+            
+            // CASE A: Project Admin has NO buildings assigned
             if (!buildingIds || buildingIds.length === 0) {
+                console.log("STOPPING: Project Admin has no assigned buildings. Returning empty list.");
                 return res.json([]); 
             }
 
-            // 3. Filter Tickets by Building ID
+            // CASE B: Project Admin has buildings -> Add Filter
             query += ` AND t.building_id IN (?)`;
             params.push(buildingIds);
+        } else {
+            console.log("User is Super Admin (or other): Fetching ALL tickets.");
         }
 
         query += ` ORDER BY t.created_at DESC`;
 
+        // 4. Execute
         db.query(query, params, (err, tickets) => {
-            if (err) return res.status(500).json({ error: err.message });
+            if (err) {
+                console.error("DB QUERY ERROR:", err.message);
+                return res.status(500).json({ error: err.message });
+            }
+            console.log(`SUCCESS: Found ${tickets.length} tickets in database.`);
             res.json(tickets);
         });
     });
 };
-
-
 
 // ... (Keep existing getStats, getProfile, updateProfile, updatePassword functions below)
 exports.getStats = (req, res) => {

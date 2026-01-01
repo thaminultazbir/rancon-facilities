@@ -13,63 +13,85 @@ async function fetchStats() {
 }
 
 
+// js/dashboard/tickets.js
+
 async function fetchTickets() {
-    // Wait for currentAdmin to be loaded (from state.js/fetchProfile)
-    if (!window.currentAdmin || !window.currentAdmin.id) {
-        console.warn("Admin ID not loaded yet, retrying...");
-        setTimeout(fetchTickets, 500); // Retry after 500ms
+    const tableBody = document.getElementById('ticketTableBody');
+    
+    // 1. GET ADMIN ID FROM LOCAL STORAGE
+    const adminData = localStorage.getItem('adminData');
+    if (!adminData) {
+        window.location.href = '/login.html';
         return;
     }
+    const admin = JSON.parse(adminData);
+    const adminId = admin.id; // <--- THIS WAS MISSING
 
     try {
-        // SECURE CALL: Pass admin_id to backend
-        const res = await fetch(`${API_URL}/admin/tickets?admin_id=${window.currentAdmin.id}`);
-        if (!res.ok) throw new Error("Failed to load tickets");
-        
-        window.allTickets = await res.json();
-        
-        const tbody = document.getElementById('ticketTableBody');
-        tbody.innerHTML = '';
+        // 2. SEND ID TO BACKEND
+        const res = await fetch(`/api/admin/tickets?admin_id=${adminId}`);
+        const tickets = await res.json();
 
-        if (window.allTickets.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-400">No tickets found for your assigned project.</td></tr>';
+        // Update Counts
+        document.getElementById('totalCount').innerText = tickets.length;
+        document.getElementById('pendingCount').innerText = tickets.filter(t => t.status === 'Pending').length;
+        document.getElementById('resolvedCount').innerText = tickets.filter(t => t.status === 'Resolved').length;
+
+        tableBody.innerHTML = '';
+
+        if (tickets.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-500">No tickets found for your assigned buildings.</td></tr>`;
             return;
         }
 
-        window.allTickets.forEach(t => {
-            // ... (Your existing row rendering logic goes here) ...
-            // Copy the HTML generation from your previous version
-             const statusColors = {
-                'Pending': 'bg-yellow-100 text-yellow-800',
-                'In Progress': 'bg-blue-100 text-blue-800',
-                'Resolved': 'bg-green-100 text-green-800'
-            };
-            
-            const staffDisplay = t.assigned_to 
-                ? `<span class="flex items-center gap-1 font-medium text-gray-700"><div class="w-5 h-5 rounded-full bg-gray-200 text-[10px] flex items-center justify-center">${t.staff_name.charAt(0)}</div>${t.staff_name}</span>`
-                : `<span class="text-gray-400 italic text-xs">Unassigned</span>`;
-
-            tbody.innerHTML += `
-                <tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors cursor-pointer group" onclick="openTicketModal(${t.id})">
-                    <td class="px-6 py-4 font-medium text-gray-900 group-hover:text-ranconBlue">#${t.id}</td>
+        tickets.forEach(ticket => {
+            const row = `
+                <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
+                    <td class="px-6 py-4 font-medium text-gray-900">#${ticket.id}</td>
                     <td class="px-6 py-4">
-                        <div><p class="font-medium text-gray-900 text-sm">${t.name}</p><p class="text-xs text-gray-500">${t.contact}</p></div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
+                                ${ticket.name.charAt(0)}
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">${ticket.name}</p>
+                                <p class="text-xs text-gray-500">${ticket.phone}</p>
+                            </div>
+                        </div>
                     </td>
-                    <td class="px-6 py-4 text-gray-600 text-sm">${t.building_name} <span class="text-gray-400">/ ${t.apartment}</span></td>
-                    <td class="px-6 py-4 text-gray-600 text-sm truncate max-w-[150px]">${t.category}</td>
-                    <td class="px-6 py-4">${staffDisplay}</td>
-                    <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusColors[t.status]}">${t.status}</span></td>
-                    <td class="px-6 py-4 text-gray-400 hover:text-ranconBlue"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></td>
-                </tr>`;
+                    <td class="px-6 py-4 text-sm text-gray-600">
+                        <span class="font-medium">${ticket.building_name || 'N/A'}</span>
+                        <span class="text-xs text-gray-400 block">Floor ${ticket.floor_no}, Apt ${ticket.apartment_no}</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-[200px]" title="${ticket.issue_details}">
+                        ${ticket.issue_details.substring(0, 30)}...
+                    </td>
+                     <td class="px-6 py-4 text-sm">
+                        ${ticket.staff_name 
+                            ? `<span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-xs font-medium">${ticket.staff_name}</span>` 
+                            : '<span class="text-gray-400 text-xs italic">Unassigned</span>'}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium 
+                            ${ticket.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                              ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 
+                              'bg-green-100 text-green-800'}">
+                            ${ticket.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <button onclick="openTicketModal(${ticket.id})" class="text-ranconBlue hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
         });
-        
-        fetchStats(); // Update stats after tickets load
-
-    } catch (e) { 
-        console.error("Fetch Tickets Error:", e); 
+    } catch (err) {
+        console.error(err);
     }
 }
-
 
 
 

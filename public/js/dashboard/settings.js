@@ -1,4 +1,4 @@
-// public/js/dashboard/settings.js
+// js/dashboard/settings.js
 
 // 1. Safe Toast Helper
 function safeToast(message, type) {
@@ -15,30 +15,22 @@ window.openAdminModal = function() {
 
 // --- NEW: EDIT LOGIC ---
 window.openEditAdminModal = async function(adminId) {
-    // 1. Find Admin Data from local array (window.allAdmins set in fetchAdmins)
     const admin = window.allAdmins.find(a => a.id === adminId);
     if (!admin) return;
 
-    // 2. Populate Fields
     document.getElementById('editAdminId').value = admin.id;
     document.getElementById('editAdminName').value = admin.name;
     document.getElementById('editAdminEmail').value = admin.email;
     document.getElementById('editAdminPhone').value = admin.phone;
     document.getElementById('editAdminRole').value = admin.role;
 
-    // 3. Handle Project Select Visibility & Value
     const container = document.getElementById('editProjectSelectContainer');
     const select = document.getElementById('editAdminBuilding');
     
-    // Ensure buildings are loaded before setting value
     await populateBuildingSelect('editAdminBuilding'); 
 
     if (admin.role === 'Project Admin') {
         container.classList.remove('hidden');
-        // We need the building ID, not name. 
-        // Since the list endpoint returns building_name, we might need to match by name or fetch detailed list.
-        // Quick fix: loop options to find matching text, or rely on fetchAdmins returning building_id (Best).
-        // *Assumed: backend list endpoint updated to return building_id as 'assigned_bid'*
         if (admin.assigned_bid) select.value = admin.assigned_bid; 
     } else {
         container.classList.add('hidden');
@@ -70,7 +62,7 @@ function handleRoleToggle(roleId, containerId, selectId) {
 window.openProfileModal = function() { 
     document.getElementById('profileMenu').classList.add('hidden'); 
     document.getElementById('profileModal').classList.remove('hidden'); 
-    if(window.fetchProfile) window.fetchProfile(); 
+    fetchProfile(); // Calls the updated function below
 };
 
 // 3. Populate Buildings Helper
@@ -91,6 +83,113 @@ async function populateBuildingSelect(elementId = 'newAdminBuilding') {
     } catch (e) { console.error(e); }
 }
 
+// ---------------------------------------------------------
+//  NEW: PROFILE & PASSWORD LOGIC (UPDATED)
+// ---------------------------------------------------------
+
+// A. Fetch Profile (Reads ID from LocalStorage)
+async function fetchProfile() {
+    const adminData = localStorage.getItem('adminData');
+    if (!adminData) return;
+    
+    const admin = JSON.parse(adminData);
+    const id = admin.id; // <--- KEY FIX
+
+    try {
+        const res = await fetch(`${API_URL}/admin/profile?id=${id}`);
+        const data = await res.json();
+
+        // Update Header UI
+        document.getElementById('headerAdminName').innerText = data.name;
+        const avatarUrl = data.avatar ? `/${data.avatar}` : `https://ui-avatars.com/api/?name=${data.name}&background=076C99&color=fff`;
+        document.getElementById('headerAvatar').src = avatarUrl;
+        
+        // Update Modal Inputs
+        document.getElementById('modalProfileName').innerText = data.name;
+        document.getElementById('modalAvatarPreview').src = avatarUrl;
+        document.getElementById('pName').value = data.name;
+        document.getElementById('pPhone').value = data.phone;
+        document.getElementById('pEmail').value = data.email;
+    } catch (e) { console.error("Profile fetch error", e); }
+}
+window.fetchProfile = fetchProfile; // Export to window
+
+// B. Profile Image Preview
+window.previewAvatar = function(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('modalAvatarPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+// C. Update Profile Submit
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const adminData = JSON.parse(localStorage.getItem('adminData'));
+    const formData = new FormData(e.target);
+    formData.append('id', adminData.id); // Add ID to request
+
+    try {
+        const res = await fetch(`${API_URL}/admin/profile`, {
+            method: 'POST',
+            body: formData // Sending FormData for file upload
+        });
+        const result = await res.json();
+        
+        if (res.ok) {
+            safeToast('Profile updated successfully', 'success');
+            fetchProfile(); // Refresh UI
+            // Update local storage name if changed
+            adminData.name = formData.get('name');
+            localStorage.setItem('adminData', JSON.stringify(adminData));
+        } else {
+            safeToast(result.error || 'Update failed', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        safeToast('Server error', 'error');
+    }
+});
+
+// D. Change Password Submit
+document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const adminData = JSON.parse(localStorage.getItem('adminData'));
+    const currentPassword = document.getElementById('currPass').value;
+    const newPassword = document.getElementById('newPass').value;
+
+    try {
+        const res = await fetch(`${API_URL}/admin/password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                id: adminData.id, 
+                currentPassword, 
+                newPassword 
+            })
+        });
+        const result = await res.json();
+
+        if (result.error) {
+            safeToast(result.error, 'error');
+        } else {
+            safeToast('Password changed successfully', 'success');
+            document.getElementById('passwordForm').reset();
+        }
+    } catch (error) {
+        safeToast('Server error', 'error');
+    }
+});
+
+// ---------------------------------------------------------
+//  ADMIN MANAGEMENT LOGIC
+// ---------------------------------------------------------
+
 // 4. Create Admin Submit
 document.getElementById('createAdminForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -109,12 +208,12 @@ document.getElementById('createAdminForm').addEventListener('submit', async func
     );
 });
 
-// 5. Edit Admin Submit (NEW)
+// 5. Edit Admin Submit
 document.getElementById('editAdminForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const id = document.getElementById('editAdminId').value;
     submitAdminForm(
-        `${API_URL}/admin/${id}`, // PUT route
+        `${API_URL}/admin/${id}`, 
         'PUT', 
         {
             name: document.getElementById('editAdminName').value, 
@@ -151,11 +250,10 @@ async function submitAdminForm(url, method, data, modalId) {
     } catch(err) { safeToast("Server Error", "error"); }
 }
 
-// 6. Fetch Admins List (Updated)
+// 6. Fetch Admins List
 async function fetchAdmins() {
     try {
         const res = await fetch(`${API_URL}/admin/list`);
-        // Store globally so Edit Modal can find data
         window.allAdmins = await res.json(); 
         
         const tbody = document.getElementById('adminTableBody');
