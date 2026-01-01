@@ -1,75 +1,77 @@
 async function fetchStats() {
-    try {
-        const res = await fetch(`${API_URL}/admin/stats`);
-        const data = await res.json();
-        document.getElementById('totalCount').innerText = data.total;
-        document.getElementById('pendingCount').innerText = data.pending;
-        document.getElementById('resolvedCount').innerText = data.resolved;
-    } catch(e) {}
-}
+    if (!window.currentAdmin || !window.currentAdmin.id) return;
 
-async function fetchTickets() {
     try {
-        const res = await fetch(`${API_URL}/admin/tickets`);
-        window.allTickets = await res.json();
-        const tbody = document.getElementById('ticketTableBody');
-        tbody.innerHTML = '';
+        // SECURE CALL: Pass admin_id here too
+        const res = await fetch(`${API_URL}/admin/stats?admin_id=${window.currentAdmin.id}`);
+        const stats = await res.json();
         
-        window.allTickets.forEach(t => {
-            // Logic for Status Colors
-            let statusColor = 'bg-yellow-100 text-yellow-700'; // Default Pending
-            if (t.status === 'Resolved') statusColor = 'bg-green-100 text-green-700';
-            else if (t.status === 'In Progress') statusColor = 'bg-blue-100 text-blue-700';
-
-            // Logic for Assigned Staff UI
-            const assignedHtml = t.staff_name 
-                ? `<div class="flex items-center gap-2">
-                     <div class="w-6 h-6 rounded-full bg-ranconBlue text-white flex items-center justify-center text-xs font-bold shadow-sm">${t.staff_name.charAt(0)}</div>
-                     <span class="text-sm font-medium text-gray-700 truncate max-w-[120px]">${t.staff_name}</span>
-                   </div>` 
-                : `<span class="text-xs text-gray-400 italic">Unassigned</span>`;
-            
-            // --- FIX APPLIED HERE: Added 'whitespace-nowrap' to td classes ---
-            tbody.innerHTML += `
-                <tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors">
-                    <td class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">#${t.id}</td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="font-medium text-gray-900">${t.name}</div>
-                        <div class="text-xs text-gray-400">${t.contact}</div>
-                    </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-800">${t.building_name}</div>
-                        <div class="text-xs text-gray-500">${t.floor}, ${t.apartment}</div>
-                    </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="text-xs font-bold text-ranconBlue bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 inline-block">
-                            ${t.category}
-                        </span>
-                    </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        ${assignedHtml}
-                    </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor} inline-block">
-                            ${t.status}
-                        </span>
-                    </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button onclick="openTicketModal(${t.id})" class="text-gray-500 hover:text-ranconBlue border border-gray-200 px-3 py-1 rounded-lg hover:bg-white hover:border-ranconBlue transition-all shadow-sm">
-                            View
-                        </button>
-                    </td>
-                </tr>`;
-        });
-        fetchStats();
+        document.getElementById('totalCount').innerText = stats.total;
+        document.getElementById('pendingCount').innerText = stats.pending;
+        document.getElementById('resolvedCount').innerText = stats.resolved;
     } catch(e) { console.error(e); }
 }
+
+
+async function fetchTickets() {
+    // Wait for currentAdmin to be loaded (from state.js/fetchProfile)
+    if (!window.currentAdmin || !window.currentAdmin.id) {
+        console.warn("Admin ID not loaded yet, retrying...");
+        setTimeout(fetchTickets, 500); // Retry after 500ms
+        return;
+    }
+
+    try {
+        // SECURE CALL: Pass admin_id to backend
+        const res = await fetch(`${API_URL}/admin/tickets?admin_id=${window.currentAdmin.id}`);
+        if (!res.ok) throw new Error("Failed to load tickets");
+        
+        window.allTickets = await res.json();
+        
+        const tbody = document.getElementById('ticketTableBody');
+        tbody.innerHTML = '';
+
+        if (window.allTickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-400">No tickets found for your assigned project.</td></tr>';
+            return;
+        }
+
+        window.allTickets.forEach(t => {
+            // ... (Your existing row rendering logic goes here) ...
+            // Copy the HTML generation from your previous version
+             const statusColors = {
+                'Pending': 'bg-yellow-100 text-yellow-800',
+                'In Progress': 'bg-blue-100 text-blue-800',
+                'Resolved': 'bg-green-100 text-green-800'
+            };
+            
+            const staffDisplay = t.assigned_to 
+                ? `<span class="flex items-center gap-1 font-medium text-gray-700"><div class="w-5 h-5 rounded-full bg-gray-200 text-[10px] flex items-center justify-center">${t.staff_name.charAt(0)}</div>${t.staff_name}</span>`
+                : `<span class="text-gray-400 italic text-xs">Unassigned</span>`;
+
+            tbody.innerHTML += `
+                <tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors cursor-pointer group" onclick="openTicketModal(${t.id})">
+                    <td class="px-6 py-4 font-medium text-gray-900 group-hover:text-ranconBlue">#${t.id}</td>
+                    <td class="px-6 py-4">
+                        <div><p class="font-medium text-gray-900 text-sm">${t.name}</p><p class="text-xs text-gray-500">${t.contact}</p></div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-600 text-sm">${t.building_name} <span class="text-gray-400">/ ${t.apartment}</span></td>
+                    <td class="px-6 py-4 text-gray-600 text-sm truncate max-w-[150px]">${t.category}</td>
+                    <td class="px-6 py-4">${staffDisplay}</td>
+                    <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusColors[t.status]}">${t.status}</span></td>
+                    <td class="px-6 py-4 text-gray-400 hover:text-ranconBlue"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></td>
+                </tr>`;
+        });
+        
+        fetchStats(); // Update stats after tickets load
+
+    } catch (e) { 
+        console.error("Fetch Tickets Error:", e); 
+    }
+}
+
+
+
 
 // ... inside public/js/dashboard/tickets.js
 

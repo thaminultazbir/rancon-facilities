@@ -12,6 +12,8 @@ router.post('/admin/login', adminController.login);
 router.get('/admin/list', adminController.getAllAdmins);
 // Matches: /api/admin/create
 router.post('/admin/create', adminController.createAdmin);
+router.get('/admin/tickets', adminController.getTickets);
+router.put('/admin/:id', adminController.updateAdmin);
 
 // --- DASHBOARD DATA ---
 router.get('/admin/stats', adminController.getStats);
