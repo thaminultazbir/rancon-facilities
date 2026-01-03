@@ -9,57 +9,34 @@ exports.getAllBuildings = (req, res) => {
 };
 
 exports.createBuilding = (req, res) => {
-    const { name, type, total_floors, ranges } = req.body;
-
-    // 1. Create Building Entry
+    const { name, type, total_floors, units_per_floor } = req.body;
     db.query("INSERT INTO buildings (name, type, total_floors) VALUES (?, ?, ?)", [name, type, total_floors], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         
         const buildingId = result.insertId;
         const unitValues = [];
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        // 2. Loop through User Defined Ranges
-        // Example Range: { start: 1, end: 3, units: 1 }
-        if (ranges && Array.isArray(ranges)) {
-            ranges.forEach(range => {
-                // Loop through floors in this range (e.g., Floor 1 to 3)
-                for (let f = range.start; f <= range.end; f++) {
-                    // Safety check: Don't exceed total floors
-                    if (f > total_floors) continue;
-
-                    // Generate Units for this floor
-                    for (let u = 0; u < range.units; u++) {
-                        let unitName;
-                        
-                        if (range.units === 1) {
-                            // If Single Unit: "A5" or just "5A"? Or for commercial "Level 5"?
-                            // Standardizing: If it's single, usually just the floor number or "A"+Floor works.
-                            // Let's use "A{Floor}" for consistency so it sorts well.
-                            // OR for Commercial Single unit "Level {Floor}" looks better.
-                            if (type === 'Commercial') unitName = `Level ${f}`;
-                            else unitName = `A${f}`;
-                        } else {
-                            // Multiple Units: A1, B1, C1... or A5, B5...
-                            // Logic: Letter + Floor Number
-                            const letter = letters[u] || `U${u+1}`;
-                            unitName = `${letter}${f}`;
-                        }
-                        
-                        unitValues.push([buildingId, f, unitName]);
-                    }
+        
+        // Puzzle Logic
+        if (type === 'Residential') {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (let f = 1; f <= total_floors; f++) {
+                for (let u = 0; u < units_per_floor; u++) {
+                    const letter = letters[u] || `U${u+1}`;
+                    unitValues.push([buildingId, f, `${letter}${f}`]);
                 }
-            });
+            }
+        } else {
+            for (let f = 1; f <= total_floors; f++) {
+                unitValues.push([buildingId, f, `Level ${f}`]);
+            }
         }
 
-        // 3. Bulk Insert Units
         if (unitValues.length > 0) {
             db.query("INSERT INTO units (building_id, floor_number, unit_name) VALUES ?", [unitValues], (err) => {
                 if (err) console.error("Unit gen failed", err);
             });
         }
-
-        res.json({ message: 'Building created & units generated', id: buildingId });
+        res.json({ message: 'Building created', id: buildingId });
     });
 };
 

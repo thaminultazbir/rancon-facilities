@@ -77,21 +77,3 @@ window.switchView = function(viewName) {
         toggleSidebar();
     }
 };
-
-// --- INITIALIZATION LOGIC ---
-document.addEventListener('DOMContentLoaded', () => {
-    // HIDE ADMINS TAB FOR PROJECT ADMINS
-    // We check if currentAdmin is defined (from state.js) and check their role
-    if (typeof currentAdmin !== 'undefined' && currentAdmin.role !== 'Super Admin') {
-        const adminBtn = document.getElementById('nav-admins');
-        if(adminBtn) {
-            adminBtn.style.display = 'none'; // Hide the button
-        }
-        
-        // Extra Security: If they somehow land on the Admin view, kick them to Tickets
-        const adminView = document.getElementById('view-admins');
-        if (adminView && !adminView.classList.contains('hidden')) {
-            switchView('tickets');
-        }
-    }
-});

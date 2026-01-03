@@ -1,99 +1,75 @@
 async function fetchStats() {
-    if (!window.currentAdmin || !window.currentAdmin.id) return;
-
     try {
-        // SECURE CALL: Pass admin_id here too
-        const res = await fetch(`${API_URL}/admin/stats?admin_id=${window.currentAdmin.id}`);
-        const stats = await res.json();
-        
-        document.getElementById('totalCount').innerText = stats.total;
-        document.getElementById('pendingCount').innerText = stats.pending;
-        document.getElementById('resolvedCount').innerText = stats.resolved;
-    } catch(e) { console.error(e); }
+        const res = await fetch(`${API_URL}/admin/stats`);
+        const data = await res.json();
+        document.getElementById('totalCount').innerText = data.total;
+        document.getElementById('pendingCount').innerText = data.pending;
+        document.getElementById('resolvedCount').innerText = data.resolved;
+    } catch(e) {}
 }
-
-
-// js/dashboard/tickets.js
 
 async function fetchTickets() {
-    const tableBody = document.getElementById('ticketTableBody');
-    
-    // 1. GET ADMIN ID FROM LOCAL STORAGE
-    const adminData = localStorage.getItem('adminData');
-    if (!adminData) {
-        window.location.href = '/login.html';
-        return;
-    }
-    const admin = JSON.parse(adminData);
-    const adminId = admin.id; // <--- THIS WAS MISSING
-
     try {
-        // 2. SEND ID TO BACKEND
-        const res = await fetch(`/api/admin/tickets?admin_id=${adminId}`);
-        const tickets = await res.json();
+        const res = await fetch(`${API_URL}/admin/tickets`);
+        window.allTickets = await res.json();
+        const tbody = document.getElementById('ticketTableBody');
+        tbody.innerHTML = '';
+        
+        window.allTickets.forEach(t => {
+            // Logic for Status Colors
+            let statusColor = 'bg-yellow-100 text-yellow-700'; // Default Pending
+            if (t.status === 'Resolved') statusColor = 'bg-green-100 text-green-700';
+            else if (t.status === 'In Progress') statusColor = 'bg-blue-100 text-blue-700';
 
-        // Update Counts
-        document.getElementById('totalCount').innerText = tickets.length;
-        document.getElementById('pendingCount').innerText = tickets.filter(t => t.status === 'Pending').length;
-        document.getElementById('resolvedCount').innerText = tickets.filter(t => t.status === 'Resolved').length;
-
-        tableBody.innerHTML = '';
-
-        if (tickets.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-500">No tickets found for your assigned buildings.</td></tr>`;
-            return;
-        }
-
-        tickets.forEach(ticket => {
-            const row = `
-                <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
-                    <td class="px-6 py-4 font-medium text-gray-900">#${ticket.id}</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
-                                ${ticket.name.charAt(0)}
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">${ticket.name}</p>
-                                <p class="text-xs text-gray-500">${ticket.phone}</p>
-                            </div>
-                        </div>
+            // Logic for Assigned Staff UI
+            const assignedHtml = t.staff_name 
+                ? `<div class="flex items-center gap-2">
+                     <div class="w-6 h-6 rounded-full bg-ranconBlue text-white flex items-center justify-center text-xs font-bold shadow-sm">${t.staff_name.charAt(0)}</div>
+                     <span class="text-sm font-medium text-gray-700 truncate max-w-[120px]">${t.staff_name}</span>
+                   </div>` 
+                : `<span class="text-xs text-gray-400 italic">Unassigned</span>`;
+            
+            // --- FIX APPLIED HERE: Added 'whitespace-nowrap' to td classes ---
+            tbody.innerHTML += `
+                <tr class="hover:bg-gray-50 border-b border-gray-50 transition-colors">
+                    <td class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">#${t.id}</td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-gray-900">${t.name}</div>
+                        <div class="text-xs text-gray-400">${t.contact}</div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">
-                        <span class="font-medium">${ticket.building_name || 'N/A'}</span>
-                        <span class="text-xs text-gray-400 block">Floor ${ticket.floor_no}, Apt ${ticket.apartment_no}</span>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-800">${t.building_name}</div>
+                        <div class="text-xs text-gray-500">${t.floor}, ${t.apartment}</div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-[200px]" title="${ticket.issue_details}">
-                        ${ticket.issue_details.substring(0, 30)}...
-                    </td>
-                     <td class="px-6 py-4 text-sm">
-                        ${ticket.staff_name 
-                            ? `<span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-xs font-medium">${ticket.staff_name}</span>` 
-                            : '<span class="text-gray-400 text-xs italic">Unassigned</span>'}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium 
-                            ${ticket.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                              ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 
-                              'bg-green-100 text-green-800'}">
-                            ${ticket.status}
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-xs font-bold text-ranconBlue bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 inline-block">
+                            ${t.category}
                         </span>
                     </td>
-                    <td class="px-6 py-4">
-                        <button onclick="openTicketModal(${ticket.id})" class="text-ranconBlue hover:bg-blue-50 p-2 rounded-lg transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${assignedHtml}
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor} inline-block">
+                            ${t.status}
+                        </span>
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button onclick="openTicketModal(${t.id})" class="text-gray-500 hover:text-ranconBlue border border-gray-200 px-3 py-1 rounded-lg hover:bg-white hover:border-ranconBlue transition-all shadow-sm">
+                            View
                         </button>
                     </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
+                </tr>`;
         });
-    } catch (err) {
-        console.error(err);
-    }
+        fetchStats();
+    } catch(e) { console.error(e); }
 }
-
-
 
 // ... inside public/js/dashboard/tickets.js
 
