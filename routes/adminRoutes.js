@@ -18,5 +18,12 @@ router.get('/admin/stats', adminController.getStats);
 router.get('/admin/profile', adminController.getProfile);
 router.post('/admin/profile', upload.single('avatar'), adminController.updateProfile);
 router.post('/admin/password', adminController.updatePassword);
+// Matches /api/admin/update
+router.put('/admin/update', adminController.updateAdminFull);
+// In routes/adminRoutes.js
+router.post('/admin/buildings', adminController.createBuilding);
+router.get('/admin/building/:id/units', adminController.getBuildingUnits);
+router.put('/admin/unit/:id', adminController.updateUnit);
+router.delete('/building/:id', adminController.deleteBuilding);
 
 module.exports = router;

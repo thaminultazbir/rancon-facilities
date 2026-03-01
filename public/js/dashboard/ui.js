@@ -77,3 +77,10 @@ window.switchView = function(viewName) {
         toggleSidebar();
     }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (currentAdmin && currentAdmin.role !== 'Super Admin') {
+        const adminNav = document.getElementById('nav-admins');
+        if (adminNav) adminNav.style.display = 'none';
+    }
+});

@@ -10,7 +10,7 @@ async function fetchStats() {
 
 async function fetchTickets() {
     try {
-        const res = await fetch(`${API_URL}/admin/tickets`);
+        const res = await fetch(`${API_URL}/admin/tickets?admin_id=${currentAdmin.id}`);
         window.allTickets = await res.json();
         const tbody = document.getElementById('ticketTableBody');
         tbody.innerHTML = '';

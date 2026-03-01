@@ -4,28 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rancon Facilities Support</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/png" href="../img/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { ranconBlue: '#005a8d', ranconRed: '#d32f2f', bgGray: '#F3F4F6' },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    animation: { 
-                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'scale-up': 'scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
-                    },
-                    keyframes: { 
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        scaleUp: { '0%': { opacity: '0', transform: 'scale(0.8)' }, '100%': { opacity: '1', transform: 'scale(1)' } }
-                    },
-                    boxShadow: { 'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.15)', 'glow': '0 0 15px rgba(0, 90, 141, 0.3)' }
-                }
-            }
-        }
-    </script>
+    <link href="/css/output.css" rel="stylesheet">
     <style>
         body { -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -269,32 +250,73 @@
             const buildingId = buildingSelect.value;
             resetSelect(floorSelect, "Loading...");
             resetSelect(aptSelect, "Unit");
+            
             if (!buildingId) return;
+
             try {
                 const response = await fetch(`/api/admin/building/${buildingId}/units`);
                 currentBuildingUnits = await response.json();
-                const uniqueFloors = [...new Set(currentBuildingUnits.map(u => u.floor_number))].sort((a, b) => a - b);
+                
+                // Sort floors numerically
+                const uniqueFloors = [...new Set(currentBuildingUnits.map(u => u.floor_no))].sort((a, b) => a - b);
+                
                 resetSelect(floorSelect, "Floor");
+                
                 uniqueFloors.forEach(f => {
                     const opt = document.createElement('option');
-                    opt.value = f; opt.textContent = `Floor ${f}`; 
+                    opt.value = f; 
+                    
+                    // --- FIX STARTS HERE: UX Labeling Logic ---
+                    let labelText = `Level ${f}`;
+                    if (f === 0) {
+                        labelText = "Ground Floor";
+                    } else if (f < 0) {
+                        labelText = `Basement ${Math.abs(f)}`;
+                    }
+                    // ------------------------------------------
+
+                    opt.textContent = labelText; 
                     floorSelect.appendChild(opt);
                 });
+                
                 floorSelect.disabled = false;
-            } catch (e) { resetSelect(floorSelect, "Error"); }
+            } catch (e) { 
+                console.error(e); // Added console error for better debugging
+                resetSelect(floorSelect, "Error loading floors"); 
+            }
         }
 
         function handleFloorChange() {
+            // --- FIX STARTS HERE: Check for empty string explicitly ---
+            // JavaScript treats 0 as false. Checking "if (!floor)" fails for Ground Floor.
+            // We check if the raw value is empty instead.
+            if (floorSelect.value === "") {
+                resetSelect(aptSelect, "Unit");
+                return;
+            }
+
             const floor = parseInt(floorSelect.value);
+            // ---------------------------------------------------------
+
             resetSelect(aptSelect, "Unit");
-            if (!floor) return;
-            const units = currentBuildingUnits.filter(u => u.floor_number === floor);
-            units.forEach(u => {
+
+            // Filter units matching the floor
+            const units = currentBuildingUnits.filter(u => u.floor_no === floor);
+            
+            if (units.length > 0) {
+                units.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.unit_name; 
+                    opt.textContent = u.unit_name;
+                    aptSelect.appendChild(opt);
+                });
+                aptSelect.disabled = false;
+            } else {
+                // Optional: Handle case where floor exists but has no units (e.g. empty floor)
                 const opt = document.createElement('option');
-                opt.value = u.unit_name; opt.textContent = u.unit_name;
+                opt.textContent = "No units available";
                 aptSelect.appendChild(opt);
-            });
-            aptSelect.disabled = false;
+            }
         }
 
         const fileInput = document.getElementById('fileInput');
